@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LogbookServiceClient\Logbook.csproj" />
+    <ProjectReference Include="..\LogbookServiceClient\LogbookServiceClient.csproj" />
   </ItemGroup>
 
 </Project>
