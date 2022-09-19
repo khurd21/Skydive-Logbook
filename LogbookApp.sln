@@ -5,15 +5,15 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogbookService", "LogbookService", "{DF499CF0-300C-45E8-A48A-C3421A6EBA16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookService", "LogbookService\LogbookService\LogbookService.csproj", "{6CB6F371-2F5D-4162-B765-B9BE6FFE93A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookService", "src\LogbookService\LogbookService\LogbookService.csproj", "{6CB6F371-2F5D-4162-B765-B9BE6FFE93A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookService.Test", "LogbookService\LogbookService.Test\LogbookService.Test.csproj", "{A7845522-3DEF-4581-857F-0AC125585BA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookService.Test", "src\LogbookService\LogbookService.Test\LogbookService.Test.csproj", "{A7845522-3DEF-4581-857F-0AC125585BA5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogbookServiceClient", "LogbookServiceClient", "{7F1E2AE7-CD82-4530-BA7D-A5437EC2CE3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookServiceClient", "LogbookServiceClient\LogbookServiceClient\LogbookServiceClient.csproj", "{BC468D87-8AB8-45B4-8976-33436179AC1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookServiceClient", "src\LogbookServiceClient\LogbookServiceClient\LogbookServiceClient.csproj", "{BC468D87-8AB8-45B4-8976-33436179AC1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookServiceClient.Test", "LogbookServiceClient\LogbookServiceClient.Test\LogbookServiceClient.Test.csproj", "{CCD82707-688A-4FE7-89A7-3D249C8B6635}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookServiceClient.Test", "src\LogbookServiceClient\LogbookServiceClient.Test\LogbookServiceClient.Test.csproj", "{CCD82707-688A-4FE7-89A7-3D249C8B6635}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
