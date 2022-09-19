@@ -1,4 +1,4 @@
-namespace LogbookService.Records.JumpType;
+namespace LogbookService.Records.Enums;
 
 public enum JumpCategory
 {
