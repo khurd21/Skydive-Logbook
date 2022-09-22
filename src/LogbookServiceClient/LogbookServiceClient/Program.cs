@@ -1,10 +1,17 @@
-using LogbookService.Dependencies;
+using Amazon.DynamoDBv2;
+using LogbookService.Dependencies.DynamoDB;
+using LogbookService.Dependencies.LogbookService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services
-    .AddSingleton<ILogbookService, LogbookServiceProvider>();
+    .AddSingleton<AmazonDynamoDBConfig>(
+        provider =>(AmazonDynamoDBConfig)new DynamoDBConfigProvider(provider.GetService<IConfiguration>()!).GetService(typeof(AmazonDynamoDBConfig))!)
+    .AddSingleton<AmazonDynamoDBClient>(
+        provider => (AmazonDynamoDBClient)new DynamoDBClientProvider(provider.GetService<AmazonDynamoDBConfig>()!).GetService(typeof(AmazonDynamoDBClient))!)
+    .AddSingleton<ILogbookService, LogbookServiceProvider>()
+    .AddSingleton<IConfiguration>(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,6 +1,6 @@
 using LogbookService.Records;
 
-namespace LogbookService.Dependencies;
+namespace LogbookService.Dependencies.LogbookService;
 
 public interface ILogbookService
 {

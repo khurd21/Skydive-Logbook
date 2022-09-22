@@ -1,5 +1,5 @@
 using Logbook.APIs;
-using LogbookService.Dependencies;
+using LogbookService.Dependencies.LogbookService;
 using LogbookService.Records;
 using Microsoft.AspNetCore.Mvc;
 
