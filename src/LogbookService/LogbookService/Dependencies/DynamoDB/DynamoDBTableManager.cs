@@ -11,7 +11,7 @@ namespace LogbookService.Dependencies.DynamoDB;
  * Reference: https://docs.aws.amazon.com/sdkfornet/v3/apidocs/items/DynamoDBv2/MDynamoDBCreateTableCreateTableRequest.html
  * Enum Support: https://aws.amazon.com/blogs/developer/dynamodb-datamodel-enum-support/
  */
-public class DynamoDBTableManager
+public sealed class DynamoDBTableManager
 {
     private AmazonDynamoDBClient Client { get; init; }
 
@@ -21,6 +21,7 @@ public class DynamoDBTableManager
     {
         this.Client = dynamoDbClient;
         this.Logger = logger;
+        // TODO: Ping the client to make sure it's working.
     }
 
     public void ReinitializeTables()
@@ -53,6 +54,13 @@ public class DynamoDBTableManager
     {
         try
         {
+            ListTablesResponse listTablesResponse = this.Client.ListTablesAsync().Result;
+            if (!(listTablesResponse.TableNames.Contains(nameof(SkydiverInfo)) &&
+                listTablesResponse.TableNames.Contains(nameof(LoggedJump))))
+            {
+                return new List<DeleteTableResponse>();
+            }
+
             Task<DeleteTableResponse>[] deleteTableTasks = new Task<DeleteTableResponse>[]
             {
                 this.Client.DeleteTableAsync(new DeleteTableRequest { TableName = nameof(SkydiverInfo)}),
