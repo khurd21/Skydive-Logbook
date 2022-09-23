@@ -23,6 +23,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    // Initialize the Database Tables
+    AmazonDynamoDBClient client = app.Services.GetService<AmazonDynamoDBClient>()!;
+    ILogger logger = app.Services.GetService<ILogger>()!;
+    DynamoDBTableManager tableManager = new(client, logger);
+    tableManager.ReinitializeTables();
+
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

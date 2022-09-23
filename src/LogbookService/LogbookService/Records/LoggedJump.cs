@@ -9,10 +9,7 @@ public class LoggedJump
     [DynamoDBHashKey]
     public string? Id { get; init; }
 
-    [DynamoDBProperty]
-    public string? UserId { get; init; }
-
-    [DynamoDBProperty]
+    [DynamoDBRangeKey]
     public int JumpNumber { get; init; }
 
     [DynamoDBProperty]
@@ -31,7 +28,7 @@ public class LoggedJump
     public int ParachuteSize { get; init; }
 
     [DynamoDBProperty]
-    public string? DropZone { get; init; }
+    public string? Dropzone { get; init; }
 
     [DynamoDBProperty]
     public string? Description { get; init; }

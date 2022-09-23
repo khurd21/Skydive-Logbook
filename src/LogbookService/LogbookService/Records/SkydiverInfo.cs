@@ -6,6 +6,9 @@ namespace LogbookService.Records;
 public class SkydiverInfo
 {
     [DynamoDBHashKey]
+    public int USPAMembershipNumber { get; init; }
+
+    [DynamoDBProperty]
     public string? Email { get; init; }
 
     [DynamoDBProperty]
@@ -13,9 +16,6 @@ public class SkydiverInfo
 
     [DynamoDBProperty]
     public string? LastName { get; init; }
-
-    [DynamoDBProperty]
-    public string? USPAMembershipNumber { get; init; }
 
     [DynamoDBProperty]
     public string? USPALicenseNumber { get; init; }
