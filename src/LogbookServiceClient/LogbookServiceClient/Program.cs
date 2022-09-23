@@ -4,6 +4,11 @@ using LogbookService.Dependencies.LogbookService;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Logging
+builder.Logging
+    .ClearProviders()
+    .AddConsole();
+
 // Add services to the container.
 builder.Services
     .AddSingleton<AmazonDynamoDBConfig>(
@@ -25,7 +30,8 @@ if (app.Environment.IsDevelopment())
 {
     // Initialize the Database Tables
     AmazonDynamoDBClient client = app.Services.GetService<AmazonDynamoDBClient>()!;
-    ILogger logger = app.Services.GetService<ILogger>()!;
+    ILogger logger = app.Services.GetService<ILogger<DynamoDBTableManager>>()!;
+
     DynamoDBTableManager tableManager = new(client, logger);
     tableManager.ReinitializeTables();
 
