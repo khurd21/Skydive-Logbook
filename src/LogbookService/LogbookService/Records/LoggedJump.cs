@@ -4,10 +4,10 @@ using LogbookService.Records.Enums;
 namespace LogbookService.Records;
 
 [DynamoDBTable(nameof(LoggedJump))]
-public class LoggedJump
+public sealed class LoggedJump
 {
     [DynamoDBHashKey]
-    public string? Id { get; init; }
+    public int USPAMembershipNumber { get; init; }
 
     [DynamoDBRangeKey]
     public int JumpNumber { get; init; }

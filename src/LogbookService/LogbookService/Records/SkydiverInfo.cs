@@ -3,7 +3,7 @@ using Amazon.DynamoDBv2.DataModel;
 namespace LogbookService.Records;
 
 [DynamoDBTable(nameof(SkydiverInfo))]
-public class SkydiverInfo
+public sealed class SkydiverInfo
 {
     [DynamoDBHashKey]
     public int USPAMembershipNumber { get; init; }

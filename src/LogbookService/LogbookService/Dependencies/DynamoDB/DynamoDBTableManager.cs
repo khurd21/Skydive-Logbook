@@ -7,27 +7,27 @@ namespace LogbookService.Dependencies.DynamoDB;
 
 /*
  * DynamoDBTableManager
- * Descpription: A hard coded way to drop and re-create tables for debugging purposes.
+ * Description: A hard coded way to drop and re-create tables for debugging purposes.
  * Reference: https://docs.aws.amazon.com/sdkfornet/v3/apidocs/items/DynamoDBv2/MDynamoDBCreateTableCreateTableRequest.html
  * Enum Support: https://aws.amazon.com/blogs/developer/dynamodb-datamodel-enum-support/
  */
-public sealed class DynamoDBTableManager
+public sealed class DynamoDBTableManager : IDynamoDBTableManager
 {
     private AmazonDynamoDBClient Client { get; init; }
 
     private ILogger Logger { get; init; }
 
+    private IEnumerable<string> TableNames { get; init; }
+
     public DynamoDBTableManager(AmazonDynamoDBClient dynamoDbClient, ILogger logger)
     {
         this.Client = dynamoDbClient;
         this.Logger = logger;
-        // TODO: Ping the client to make sure it's working.
-    }
-
-    public void ReinitializeTables()
-    {
-        this.DeleteTables();
-        this.CreateTables();
+        this.TableNames = new List<string>
+        {
+            nameof(SkydiverInfo),
+            nameof(LoggedJump),
+        };
     }
 
     public IEnumerable<CreateTableResponse> CreateTables()
@@ -55,17 +55,9 @@ public sealed class DynamoDBTableManager
         try
         {
             ListTablesResponse listTablesResponse = this.Client.ListTablesAsync().Result;
-            if (!(listTablesResponse.TableNames.Contains(nameof(SkydiverInfo)) &&
-                listTablesResponse.TableNames.Contains(nameof(LoggedJump))))
-            {
-                return new List<DeleteTableResponse>();
-            }
+            IEnumerable<string> tableNames = listTablesResponse.TableNames;
+            Task<DeleteTableResponse>[] deleteTableTasks = tableNames.Select(tableName => this.Client.DeleteTableAsync(tableName)).ToArray();
 
-            Task<DeleteTableResponse>[] deleteTableTasks = new Task<DeleteTableResponse>[]
-            {
-                this.Client.DeleteTableAsync(new DeleteTableRequest { TableName = nameof(SkydiverInfo)}),
-                this.Client.DeleteTableAsync(new DeleteTableRequest { TableName = nameof(LoggedJump)}),
-            };
             Task task = Task.WhenAll(deleteTableTasks);
             task.Wait();
             this.AssertAndLogTaskResult(nameof(this.DeleteTables), task);
@@ -84,27 +76,7 @@ public sealed class DynamoDBTableManager
             new()
             {
                 AttributeName = nameof(SkydiverInfo.USPAMembershipNumber),
-                AttributeType = "N",
-            },
-            new()
-            {
-                AttributeName = nameof(SkydiverInfo.Email),
-                AttributeType = "S",
-            },
-            new()
-            {
-                AttributeName = nameof(SkydiverInfo.FirstName),
-                AttributeType = "S",
-            },
-            new()
-            {
-                AttributeName = nameof(SkydiverInfo.LastName),
-                AttributeType = "S",
-            },
-            new()
-            {
-                AttributeName = nameof(SkydiverInfo.USPALicenseNumber),
-                AttributeType = "S",
+                AttributeType = ScalarAttributeType.N,
             },
         };
         List<KeySchemaElement> keySchemaElements = new()
@@ -112,7 +84,7 @@ public sealed class DynamoDBTableManager
             new()
             {
                 AttributeName = nameof(SkydiverInfo.USPAMembershipNumber),
-                KeyType = "HASH",
+                KeyType = KeyType.HASH,
             },
         };
         ProvisionedThroughput provisionedThroughput = new()
@@ -136,66 +108,26 @@ public sealed class DynamoDBTableManager
         {
             new()
             {
-                AttributeName = nameof(LoggedJump.Id),
-                AttributeType = "N",
+                AttributeName = nameof(LoggedJump.USPAMembershipNumber),
+                AttributeType = ScalarAttributeType.N,
             },
             new()
             {
                 AttributeName = nameof(LoggedJump.JumpNumber),
-                AttributeType = "N",
+                AttributeType = ScalarAttributeType.N,
             },
-            new()
-            {
-                AttributeName = nameof(LoggedJump.Date),
-                AttributeType = "S",
-            },
-            new()
-            {
-                AttributeName = nameof(LoggedJump.Date),
-                AttributeType = "S",
-            },
-            new()
-            {
-                AttributeName = nameof(LoggedJump.JumpCategory),
-                AttributeType = "N",
-            },
-            new()
-            {
-                AttributeName = nameof(LoggedJump.Aircraft),
-                AttributeType = "S",
-            },
-            new()
-            {
-                AttributeName = nameof(LoggedJump.Parachute),
-                AttributeType = "S",
-            },
-            new()
-            {
-                AttributeName = nameof(LoggedJump.ParachuteSize),
-                AttributeType = "N",
-            },
-            new()
-            {
-                AttributeName = nameof(LoggedJump.Dropzone),
-                AttributeType = "S",
-            },
-            new()
-            {
-                AttributeName = nameof(LoggedJump.Description),
-                AttributeType = "S",
-            }
         };
         List<KeySchemaElement> keySchemaElements = new()
         {
             new()
             {
-                AttributeName = nameof(LoggedJump.Id),
-                KeyType = "HASH",
+                AttributeName = nameof(LoggedJump.USPAMembershipNumber),
+                KeyType = KeyType.HASH,
             },
             new()
             {
                 AttributeName = nameof(LoggedJump.JumpNumber),
-                KeyType = "RANGE",
+                KeyType = KeyType.RANGE,
             }
         };
         ProvisionedThroughput provisionedThroughput = new()
@@ -221,15 +153,7 @@ public sealed class DynamoDBTableManager
         return response;
     }
 
-    private IEnumerable<T> ConvertTaskToEnumerable<T>(Task<T>[] taskList)
-    {
-        List<T> response = new();
-        foreach (Task<T> task in taskList)
-        {
-            response.Add(task.Result);
-        }
-        return response;
-    }
+    private IEnumerable<T> ConvertTaskToEnumerable<T>(Task<T>[] taskList) => taskList.Select(task => task.Result);
 
     private void LogTableCreated(TableDescription tableDescription)
     {

@@ -16,7 +16,9 @@ builder.Services
     .AddSingleton<AmazonDynamoDBClient>(
         provider => (AmazonDynamoDBClient)new DynamoDBClientProvider(provider.GetService<AmazonDynamoDBConfig>()!).GetService(typeof(AmazonDynamoDBClient))!)
     .AddSingleton<ILogbookService, LogbookServiceProvider>()
-    .AddSingleton<IConfiguration>(builder.Configuration);
+    .AddSingleton<IDynamoDBTableManager, DynamoDBTableManager>()
+    .AddSingleton<IConfiguration>(builder.Configuration)
+    .AddSingleton<ILogger>(provider => provider.GetService<ILoggerFactory>()!.CreateLogger("LogbookServiceClient"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -29,11 +31,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     // Initialize the Database Tables
-    AmazonDynamoDBClient client = app.Services.GetService<AmazonDynamoDBClient>()!;
-    ILogger logger = app.Services.GetService<ILogger<DynamoDBTableManager>>()!;
-
-    DynamoDBTableManager tableManager = new(client, logger);
-    tableManager.ReinitializeTables();
+    IDynamoDBTableManager tableManager = app.Services.GetService<IDynamoDBTableManager>()!;
+    tableManager.DeleteTables();
+    tableManager.CreateTables();
 
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
