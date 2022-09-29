@@ -32,7 +32,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         catch (Exception ex)
         {
             this.Logger.LogError(ex, "Failed to list jumps");
-            return this.StatusCode(500, "Unkown error. Failed to list jumps");
+            return this.StatusCode(500, "Unknown error. Failed to list jumps");
         }
         finally
         {
@@ -52,7 +52,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         catch (Exception ex)
         {
             this.Logger.LogError(ex, "Failed to log jump");
-            return this.StatusCode(500, "Unkown error. Failed to log jump");
+            return this.StatusCode(500, "Unknown error. Failed to log jump");
         }
         finally
         {
@@ -72,7 +72,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         catch (Exception ex)
         {
             this.Logger.LogError(ex, "Failed to edit jump");
-            return this.StatusCode(500, "Unkown error. Failed to edit jump");
+            return this.StatusCode(500, "Unknown error. Failed to edit jump");
         }
         finally
         {
@@ -92,7 +92,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         catch (Exception ex)
         {
             this.Logger.LogError(ex, "Failed to delete jump");
-            return this.StatusCode(500, "Unkown error. Failed to delete jump");
+            return this.StatusCode(500, "Unknown error. Failed to delete jump");
         }
         finally
         {

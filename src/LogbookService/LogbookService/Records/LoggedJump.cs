@@ -13,7 +13,7 @@ public sealed class LoggedJump
     public int JumpNumber { get; init; }
 
     [DynamoDBProperty]
-    public DateTime Date { get; init; }
+    public DateTime? Date { get; init; }
 
     [DynamoDBProperty]
     public JumpCategory? JumpCategory { get; init; }
@@ -25,7 +25,7 @@ public sealed class LoggedJump
     public string? Parachute { get; init; }
 
     [DynamoDBProperty]
-    public int ParachuteSize { get; init; }
+    public int? ParachuteSize { get; init; }
 
     [DynamoDBProperty]
     public string? Dropzone { get; init; }
