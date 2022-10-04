@@ -1,4 +1,6 @@
 using Logbook.APIs;
+using Logbook.Requests.Logbook;
+using Logbook.Responses.Logbook;
 using LogbookService.Dependencies.LogbookService;
 using LogbookService.Records;
 using Microsoft.AspNetCore.Mvc;
@@ -21,18 +23,28 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
     }
 
     [HttpGet("listjumps")]
-    public async Task<IActionResult> ListJumps()
+    [ProducesResponseType(typeof(ListJumpsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ListJumps([FromQuery] ListJumpsRequest request)
     {
         this.Logger.LogInformation($"{nameof(this.ListJumps)} called");
         try
         {
-            IEnumerable<LoggedJump> jumps = this.LogbookService.ListJumps();
-            return await Task.FromResult(this.Ok(jumps));
+            IEnumerable<LoggedJump> jumps = this.LogbookService.ListJumps(
+                uspaMembershipNumber: request.USPAMembershipNumber,
+                from: request.From,
+                to: request.To);
+
+            return await Task.FromResult(this.Ok(
+                new ListJumpsResponse() { Jumps = jumps }));
         }
         catch (Exception ex)
         {
             this.Logger.LogError(ex, "Failed to list jumps");
-            return this.StatusCode(500, "Unknown error. Failed to list jumps");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: "Failed to list jumps",
+                    statusCode: StatusCodes.Status500InternalServerError));
         }
         finally
         {
@@ -41,18 +53,36 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
     }
 
     [HttpPost("logjump")]
-    public async Task<IActionResult> LogJump()
+    [ProducesResponseType(typeof(LogJumpResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> LogJump([FromBody] LogJumpRequest request)
     {
         this.Logger.LogInformation($"{nameof(this.LogJump)} called");
         try
         {
-            this.LogbookService.LogJump(new LoggedJump());
-            return await Task.FromResult(this.Ok());
+            LoggedJump loggedJump = this.LogbookService.LogJump(new LoggedJump()
+            {
+                USPAMembershipNumber = request.USPAMembershipNumber,
+                JumpNumber = request.JumpNumber,
+                Date = request.Date,
+                JumpCategory = request.JumpCategory,
+                Aircraft = request.Aircraft,
+                Parachute = request.Parachute,
+                ParachuteSize = request.ParachuteSize,
+                Dropzone = request.Dropzone,
+                Description = request.Description,
+            });
+
+            return await Task.FromResult(this.Ok(
+                new LogJumpResponse() { LoggedJump = loggedJump }));
         }
         catch (Exception ex)
         {
             this.Logger.LogError(ex, "Failed to log jump");
-            return this.StatusCode(500, "Unknown error. Failed to log jump");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: "Failed to log jump",
+                    statusCode: StatusCodes.Status500InternalServerError));
         }
         finally
         {
@@ -61,18 +91,36 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
     }
 
     [HttpPut("editjump")]
-    public async Task<IActionResult> EditJump()
+    [ProducesResponseType(typeof(EditJumpResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> EditJump([FromBody] EditJumpRequest request)
     {
         this.Logger.LogInformation($"{nameof(this.EditJump)} called");
         try
         {
-            this.LogbookService.EditJump(new LoggedJump());
-            return await Task.FromResult(this.Ok());
+            LoggedJump loggedJump = this.LogbookService.EditJump(new LoggedJump()
+            {
+                USPAMembershipNumber = request.USPAMembershipNumber,
+                JumpNumber = request.JumpNumber,
+                Date = request.Date,
+                JumpCategory = request.JumpCategory,
+                Aircraft = request.Aircraft,
+                Parachute = request.Parachute,
+                ParachuteSize = request.ParachuteSize,
+                Dropzone = request.Dropzone,
+                Description = request.Description,
+            });
+
+            return await Task.FromResult(this.Ok(
+                new EditJumpResponse() { EditedJump = loggedJump }));
         }
         catch (Exception ex)
         {
             this.Logger.LogError(ex, "Failed to edit jump");
-            return this.StatusCode(500, "Unknown error. Failed to edit jump");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: "Failed to edit jump",
+                    statusCode: StatusCodes.Status500InternalServerError));
         }
         finally
         {
@@ -81,18 +129,29 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
     }
 
     [HttpDelete("deletejump")]
-    public async Task<IActionResult> DeleteJump()
+    [ProducesResponseType(typeof(DeleteJumpResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteJump([FromQuery] DeleteJumpRequest request)
     {
         this.Logger.LogInformation($"{nameof(this.DeleteJump)} called");
         try
         {
-            this.LogbookService.DeleteJump(new LoggedJump());
-            return await Task.FromResult(this.Ok());
+            LoggedJump loggedJump = this.LogbookService.DeleteJump(new LoggedJump()
+            {
+                USPAMembershipNumber = request.USPAMembershipNumber,
+                JumpNumber = request.JumpNumber,
+            });
+
+            return await Task.FromResult(this.Ok(
+                new DeleteJumpResponse() { DeletedJump = loggedJump }));
         }
         catch (Exception ex)
         {
             this.Logger.LogError(ex, "Failed to delete jump");
-            return this.StatusCode(500, "Unknown error. Failed to delete jump");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: "Failed to delete jump",
+                    statusCode: StatusCodes.Status500InternalServerError));
         }
         finally
         {

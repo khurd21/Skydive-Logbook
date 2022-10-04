@@ -4,22 +4,22 @@ namespace LogbookService.Dependencies.LogbookService;
 
 public class LogbookServiceProvider : ILogbookService
 {
-    public void DeleteJump(LoggedJump jump)
+    public LoggedJump DeleteJump(in LoggedJump jump)
     {
         throw new NotImplementedException();
     }
 
-    public void EditJump(LoggedJump jump)
+    public LoggedJump EditJump(in LoggedJump jump)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<LoggedJump> ListJumps()
+    public IEnumerable<LoggedJump> ListJumps(in int uspaMembershipNumber, in int from, in int to)
     {
         throw new NotImplementedException();
     }
 
-    public void LogJump(LoggedJump jump)
+    public LoggedJump LogJump(in LoggedJump jump)
     {
         throw new NotImplementedException();
     }

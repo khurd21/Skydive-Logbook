@@ -4,8 +4,8 @@ namespace LogbookService.Dependencies.LogbookService;
 
 public interface ILogbookService
 {
-    IEnumerable<LoggedJump> ListJumps();
-    void LogJump(LoggedJump jump);
-    void EditJump(LoggedJump jump);
-    void DeleteJump(LoggedJump jump);
+    IEnumerable<LoggedJump> ListJumps(in int uspaMembershipNumber, in int from, in int to);
+    LoggedJump LogJump(in LoggedJump jump);
+    LoggedJump EditJump(in LoggedJump jump);
+    LoggedJump DeleteJump(in LoggedJump jump);
 }
