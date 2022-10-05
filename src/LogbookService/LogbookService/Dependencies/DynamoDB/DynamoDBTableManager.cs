@@ -15,11 +15,11 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
 {
     private AmazonDynamoDBClient Client { get; init; }
 
-    private ILogger Logger { get; init; }
+    private ILogger<DynamoDBTableManager> Logger { get; init; }
 
     private IEnumerable<string> TableNames { get; init; }
 
-    public DynamoDBTableManager(AmazonDynamoDBClient dynamoDbClient, ILogger logger)
+    public DynamoDBTableManager(AmazonDynamoDBClient dynamoDbClient, ILogger<DynamoDBTableManager> logger)
     {
         this.Client = dynamoDbClient;
         this.Logger = logger;
@@ -57,7 +57,6 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
             ListTablesResponse listTablesResponse = this.Client.ListTablesAsync().Result;
             IEnumerable<string> tableNames = listTablesResponse.TableNames;
             Task<DeleteTableResponse>[] deleteTableTasks = tableNames.Select(tableName => this.Client.DeleteTableAsync(tableName)).ToArray();
-
             Task task = Task.WhenAll(deleteTableTasks);
             task.Wait();
             this.AssertAndLogTaskResult(nameof(this.DeleteTables), task);
