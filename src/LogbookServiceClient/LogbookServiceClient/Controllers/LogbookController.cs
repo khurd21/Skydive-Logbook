@@ -72,7 +72,6 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
                 Dropzone = request.Dropzone,
                 Description = request.Description,
             });
-
             return await Task.FromResult(this.Ok(
                 new LogJumpResponse() { LoggedJump = loggedJump }));
         }
