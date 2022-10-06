@@ -37,8 +37,8 @@ if (app.Environment.IsDevelopment())
 {
     // Initialize the Database Tables
     IDynamoDBTableManager tableManager = app.Services.GetService<IDynamoDBTableManager>()!;
-    // tableManager.DeleteTables();
-    // tableManager.CreateTables();
+    tableManager.DeleteTables();
+    tableManager.CreateTables();
 
     app.UseDeveloperExceptionPage();
     app.UseSwagger();

@@ -1,5 +1,6 @@
 namespace LogbookService.Records.Enums;
 
+[Flags]
 public enum JumpCategory
 {
     BELLY = 0,

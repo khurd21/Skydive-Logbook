@@ -1,5 +1,6 @@
 using Amazon.DynamoDBv2.DataModel;
 using LogbookService.Records.Enums;
+using LogbookService.Records.PropertyConverters;
 
 namespace LogbookService.Records;
 
@@ -15,7 +16,7 @@ public sealed class LoggedJump
     [DynamoDBProperty]
     public DateTime? Date { get; init; }
 
-    [DynamoDBProperty]
+    [DynamoDBProperty(typeof(DynamoEnumConverter<JumpCategory>))]
     public JumpCategory? JumpCategory { get; init; }
 
     [DynamoDBProperty]    
