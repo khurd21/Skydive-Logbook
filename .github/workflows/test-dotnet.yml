@@ -12,6 +12,11 @@ jobs:
       matrix:
         dotnet-version: ['6.x']
     steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.x'
       - name: Install dependencies
         run: dotnet restore
       - name: Build
