@@ -29,7 +29,7 @@ public class LogbookControllerTest
     public async Task TestListJumps_ReturnsListOfJumps(IEnumerable<LoggedJump> jumps)
     {
         // Arrange
-        this.LogbookServiceMock.Setup(x => x.ListJumps(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+        this.LogbookServiceMock.Setup(x => x.ListJumps(It.IsAny<int>(), It.Ref<int>.IsAny, It.Ref<int>.IsAny))
             .Returns(jumps)
             .Verifiable();
 
@@ -54,7 +54,7 @@ public class LogbookControllerTest
     public async Task TestListJumps_ReturnsInternalServerErrorWithMessage(string message, int statusCode)
     {
         // Arrange
-        this.LogbookServiceMock.Setup(x => x.ListJumps(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+        this.LogbookServiceMock.Setup(x => x.ListJumps(It.IsAny<int>(), It.Ref<int>.IsAny, It.Ref<int>.IsAny))
             .Throws(new Exception("Random exception"))
             .Verifiable();
 

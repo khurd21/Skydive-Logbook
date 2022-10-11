@@ -2,6 +2,7 @@ using Logbook.APIs;
 using Logbook.Requests.Logbook;
 using Logbook.Responses.Logbook;
 using LogbookService.Dependencies.LogbookService;
+using LogbookService.Exceptions;
 using LogbookService.Records;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,9 +39,17 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
             return await Task.FromResult(this.Ok(
                 new ListJumpsResponse() { Jumps = jumps }));
         }
+        catch (LogbookServiceException ex)
+        {
+            this.Logger.LogError(ex, $"{nameof(this.ListJumps)} failed");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status400BadRequest));
+        }
         catch (Exception ex)
         {
-            this.Logger.LogError(ex, "Failed to list jumps");
+            this.Logger.LogWarning(ex, "Failed to list jumps");
             return await Task.FromResult(
                 this.Problem(
                     detail: "Failed to list jumps",
@@ -60,20 +69,17 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         this.Logger.LogInformation($"{nameof(this.LogJump)} called");
         try
         {
-            LoggedJump loggedJump = this.LogbookService.LogJump(new LoggedJump()
-            {
-                USPAMembershipNumber = request.USPAMembershipNumber,
-                JumpNumber = request.JumpNumber,
-                Date = request.Date,
-                JumpCategory = request.JumpCategory,
-                Aircraft = request.Aircraft,
-                Parachute = request.Parachute,
-                ParachuteSize = request.ParachuteSize,
-                Dropzone = request.Dropzone,
-                Description = request.Description,
-            });
+            LoggedJump loggedJump = this.LogbookService.LogJump(jump: request.Jump!);
             return await Task.FromResult(this.Ok(
                 new LogJumpResponse() { LoggedJump = loggedJump }));
+        }
+        catch (LogbookServiceException ex)
+        {
+            this.Logger.LogWarning(ex, $"{nameof(this.LogJump)} failed");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status400BadRequest));
         }
         catch (Exception ex)
         {
@@ -97,21 +103,17 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         this.Logger.LogInformation($"{nameof(this.EditJump)} called");
         try
         {
-            LoggedJump loggedJump = this.LogbookService.EditJump(new LoggedJump()
-            {
-                USPAMembershipNumber = request.USPAMembershipNumber,
-                JumpNumber = request.JumpNumber,
-                Date = request.Date,
-                JumpCategory = request.JumpCategory,
-                Aircraft = request.Aircraft,
-                Parachute = request.Parachute,
-                ParachuteSize = request.ParachuteSize,
-                Dropzone = request.Dropzone,
-                Description = request.Description,
-            });
-
+            LoggedJump loggedJump = this.LogbookService.EditJump(jump: request.Jump!);
             return await Task.FromResult(this.Ok(
                 new EditJumpResponse() { EditedJump = loggedJump }));
+        }
+        catch (LogbookServiceException ex)
+        {
+            this.Logger.LogWarning(ex, $"{nameof(this.EditJump)} failed");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status400BadRequest));
         }
         catch (Exception ex)
         {
@@ -143,6 +145,14 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
 
             return await Task.FromResult(this.Ok(
                 new DeleteJumpResponse() { DeletedJump = loggedJump }));
+        }
+        catch (LogbookServiceException ex)
+        {
+            this.Logger.LogWarning(ex, $"{nameof(this.DeleteJump)} failed");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status400BadRequest));
         }
         catch (Exception ex)
         {

@@ -1,5 +1,6 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
+using LogbookService.Exceptions;
 using LogbookService.Records;
 using Microsoft.Extensions.Logging;
 
@@ -19,11 +20,12 @@ public class LogbookServiceProvider : ILogbookService
 
     public LoggedJump DeleteJump(in LoggedJump jump)
     {
-        int hashKey = jump.USPAMembershipNumber;
-        int rangeKey = jump.JumpNumber;
+        this.VerifyJumpExists(
+            uspaMembershipNumber: jump.USPAMembershipNumber,
+            jumpNumber: jump.JumpNumber);
 
         this.DynamoDBContext
-                .DeleteAsync<LoggedJump>(hashKey, rangeKey)
+                .DeleteAsync<LoggedJump>(jump.USPAMembershipNumber, jump.JumpNumber)
                 .Wait();
 
         return jump;
@@ -31,11 +33,24 @@ public class LogbookServiceProvider : ILogbookService
 
     public LoggedJump EditJump(in LoggedJump jump)
     {
-        return this.LogJump(jump);
+        this.VerifySkydiverExists(
+            uspaMembershipNumber: jump.USPAMembershipNumber);
+        this.VerifyJumpExists(
+            uspaMembershipNumber: jump.USPAMembershipNumber,
+            jumpNumber: jump.JumpNumber);
+
+        this.DynamoDBContext
+                .SaveAsync<LoggedJump>(jump)
+                .Wait();
+
+        return jump;
     }
 
-    public IEnumerable<LoggedJump> ListJumps(in int uspaMembershipNumber, in int from, in int to)
+    public IEnumerable<LoggedJump> ListJumps(in int uspaMembershipNumber, in int from = 1, in int to = int.MaxValue)
     {
+        this.VerifySkydiverExists(
+            uspaMembershipNumber: uspaMembershipNumber);
+
         return this.DynamoDBContext
                         .QueryAsync<LoggedJump>(
                             uspaMembershipNumber,
@@ -47,11 +62,29 @@ public class LogbookServiceProvider : ILogbookService
 
     public LoggedJump LogJump(in LoggedJump jump)
     {
-        this.Logger.LogInformation($"Logging jump {jump}");
+        this.VerifySkydiverExists(
+            uspaMembershipNumber: jump.USPAMembershipNumber);
+
         this.DynamoDBContext
                 .SaveAsync<LoggedJump>(jump)
                 .Wait();
 
         return jump;
+    }
+
+    private void VerifySkydiverExists(in int uspaMembershipNumber)
+    {
+        if (this.DynamoDBContext.LoadAsync<SkydiverInfo>(uspaMembershipNumber).Result == null)
+        {
+            throw new LogbookServiceException($"Skydiver {uspaMembershipNumber} does not exist");
+        }
+    }
+
+    private void VerifyJumpExists(in int uspaMembershipNumber, in int jumpNumber)
+    {
+        if (this.DynamoDBContext.LoadAsync<LoggedJump>(uspaMembershipNumber, jumpNumber).Result == null)
+        {
+            throw new LogbookServiceException($"Jump {jumpNumber} does not exist for member {uspaMembershipNumber}");
+        }
     }
 }
