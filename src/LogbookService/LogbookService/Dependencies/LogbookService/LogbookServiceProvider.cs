@@ -10,9 +10,9 @@ public class LogbookServiceProvider : ILogbookService
 {
     private ILogger<LogbookServiceProvider> Logger { get; init; }
 
-    private DynamoDBContext DynamoDBContext { get; init; }
+    private IDynamoDBContext DynamoDBContext { get; init; }
 
-    public LogbookServiceProvider(ILogger<LogbookServiceProvider> logger, DynamoDBContext dynamoDBContext)
+    public LogbookServiceProvider(ILogger<LogbookServiceProvider> logger, IDynamoDBContext dynamoDBContext)
     {
         this.Logger = logger;
         this.DynamoDBContext = dynamoDBContext;

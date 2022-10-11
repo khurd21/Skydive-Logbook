@@ -18,7 +18,7 @@ builder.Services
         provider => (AmazonDynamoDBClient)new DynamoDBClientProvider(provider.GetService<AmazonDynamoDBConfig>()!).GetService(typeof(AmazonDynamoDBClient))!)
     .AddSingleton<DynamoDBContextConfig>(
         provider => (DynamoDBContextConfig)new DynamoDBContextConfigProvider().GetService(typeof(DynamoDBContextConfig))!)
-    .AddSingleton<DynamoDBContext>(
+    .AddSingleton<IDynamoDBContext>(
         provider => (DynamoDBContext)new DynamoDBContextProvider(provider.GetService<AmazonDynamoDBClient>()!, provider.GetService<DynamoDBContextConfig>()!).GetService(typeof(DynamoDBContext))!)
     .AddSingleton<ILogbookService, LogbookServiceProvider>()
     .AddSingleton<IDynamoDBTableManager, DynamoDBTableManager>()
