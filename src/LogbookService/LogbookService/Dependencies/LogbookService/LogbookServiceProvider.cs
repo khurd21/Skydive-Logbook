@@ -64,6 +64,9 @@ public class LogbookServiceProvider : ILogbookService
     {
         this.VerifySkydiverExists(
             uspaMembershipNumber: jump.USPAMembershipNumber);
+        this.VerifyJumpDoesNotExist(
+            uspaMembershipNumber: jump.USPAMembershipNumber,
+            jumpNumber: jump.JumpNumber);
 
         this.DynamoDBContext
                 .SaveAsync<LoggedJump>(jump)
@@ -76,7 +79,7 @@ public class LogbookServiceProvider : ILogbookService
     {
         if (this.DynamoDBContext.LoadAsync<SkydiverInfo>(uspaMembershipNumber).Result == null)
         {
-            throw new LogbookServiceException($"Skydiver {uspaMembershipNumber} does not exist");
+            throw new SkydiverNotFoundException(uspaMembershipNumber);
         }
     }
 
@@ -84,7 +87,15 @@ public class LogbookServiceProvider : ILogbookService
     {
         if (this.DynamoDBContext.LoadAsync<LoggedJump>(uspaMembershipNumber, jumpNumber).Result == null)
         {
-            throw new LogbookServiceException($"Jump {jumpNumber} does not exist for member {uspaMembershipNumber}");
+            throw new JumpNotFoundException(uspaMembershipNumber, jumpNumber);
+        }
+    }
+
+    private void VerifyJumpDoesNotExist(in int uspaMembershipNumber, in int jumpNumber)
+    {
+        if (this.DynamoDBContext.LoadAsync<LoggedJump>(uspaMembershipNumber, jumpNumber).Result != null)
+        {
+            throw new JumpAlreadyExistsException(uspaMembershipNumber, jumpNumber);
         }
     }
 }

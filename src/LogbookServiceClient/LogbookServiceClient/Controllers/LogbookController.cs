@@ -39,13 +39,13 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
             return await Task.FromResult(this.Ok(
                 new ListJumpsResponse() { Jumps = jumps }));
         }
-        catch (LogbookServiceException ex)
+        catch (SkydiverNotFoundException ex)
         {
-            this.Logger.LogError(ex, $"{nameof(this.ListJumps)} failed");
+            this.Logger.LogWarning(ex, $"{nameof(this.ListJumps)} failed");
             return await Task.FromResult(
                 this.Problem(
-                    detail: ex.Message,
-                    statusCode: StatusCodes.Status400BadRequest));
+                    detail: $"Skydiver with USPA membership number {request.USPAMembershipNumber} not found",
+                    statusCode: StatusCodes.Status404NotFound));
         }
         catch (Exception ex)
         {
@@ -73,13 +73,21 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
             return await Task.FromResult(this.Ok(
                 new LogJumpResponse() { LoggedJump = loggedJump }));
         }
-        catch (LogbookServiceException ex)
+        catch (SkydiverNotFoundException ex)
         {
             this.Logger.LogWarning(ex, $"{nameof(this.LogJump)} failed");
             return await Task.FromResult(
                 this.Problem(
-                    detail: ex.Message,
-                    statusCode: StatusCodes.Status400BadRequest));
+                    detail: $"Skydiver with USPA membership number {request.Jump!.USPAMembershipNumber} not found",
+                    statusCode: StatusCodes.Status404NotFound));
+        }
+        catch (JumpAlreadyExistsException ex)
+        {
+            this.Logger.LogWarning(ex, $"{nameof(this.LogJump)} failed");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: $"Jump with number {request.Jump!.JumpNumber} already exists",
+                    statusCode: StatusCodes.Status404NotFound));
         }
         catch (Exception ex)
         {
@@ -107,13 +115,21 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
             return await Task.FromResult(this.Ok(
                 new EditJumpResponse() { EditedJump = loggedJump }));
         }
-        catch (LogbookServiceException ex)
+        catch (SkydiverNotFoundException ex)
         {
             this.Logger.LogWarning(ex, $"{nameof(this.EditJump)} failed");
             return await Task.FromResult(
                 this.Problem(
-                    detail: ex.Message,
-                    statusCode: StatusCodes.Status400BadRequest));
+                    detail: $"Skydiver with USPA membership number {request.Jump!.USPAMembershipNumber} not found",
+                    statusCode: StatusCodes.Status404NotFound));
+        }
+        catch (JumpNotFoundException ex)
+        {
+            this.Logger.LogWarning(ex, $"{nameof(this.EditJump)} failed");
+            return await Task.FromResult(
+                this.Problem(
+                    detail: $"Jump with number {request.Jump!.JumpNumber} not found",
+                    statusCode: StatusCodes.Status404NotFound));
         }
         catch (Exception ex)
         {
@@ -146,13 +162,13 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
             return await Task.FromResult(this.Ok(
                 new DeleteJumpResponse() { DeletedJump = loggedJump }));
         }
-        catch (LogbookServiceException ex)
+        catch (JumpNotFoundException ex)
         {
             this.Logger.LogWarning(ex, $"{nameof(this.DeleteJump)} failed");
             return await Task.FromResult(
                 this.Problem(
-                    detail: ex.Message,
-                    statusCode: StatusCodes.Status400BadRequest));
+                    detail: $"Jump with number {request.JumpNumber} from member {request.USPAMembershipNumber} not found",
+                    statusCode: StatusCodes.Status404NotFound));
         }
         catch (Exception ex)
         {

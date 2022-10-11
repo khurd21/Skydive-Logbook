@@ -12,11 +12,16 @@ public class DynamoDBTableManagerTest
 
     private Mock<ILogger<DynamoDBTableManager>> LoggerMock { get; set; } = new();
 
+    private DynamoDBTableManager DynamoDBTableManager { get; set; } = null!;
+
     [SetUp]
     public void Setup()
     {
         this.ClientMock = new();
         this.LoggerMock = new();
+        this.DynamoDBTableManager = new(
+            this.ClientMock.Object,
+            this.LoggerMock.Object);
     }
 
     [Test]
@@ -109,10 +114,8 @@ public class DynamoDBTableManagerTest
                 }
             });
 
-        DynamoDBTableManager manager = new(this.ClientMock.Object, this.LoggerMock.Object);
-
         // Act
-        var response = manager.DeleteTables();
+        var response = this.DynamoDBTableManager.DeleteTables();
 
         // Verify
         this.ClientMock.Verify();
@@ -134,10 +137,8 @@ public class DynamoDBTableManagerTest
             })
             .Verifiable();
 
-        DynamoDBTableManager manager = new(this.ClientMock.Object, this.LoggerMock.Object);
-
         // Act
-        var response = manager.DeleteTables();
+        var response = this.DynamoDBTableManager.DeleteTables();
 
         // Verify
         this.ClientMock.Verify();
