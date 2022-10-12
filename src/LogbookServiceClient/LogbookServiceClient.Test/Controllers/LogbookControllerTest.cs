@@ -50,18 +50,24 @@ public class LogbookControllerTest
     }
 
     [Test]
-    [TestCase("Failed to list jumps", StatusCodes.Status500InternalServerError)]
-    public async Task TestListJumps_ReturnsInternalServerErrorWithMessage(string message, int statusCode)
+    [TestCaseSource(typeof(LogbookControllerTestCases), nameof(LogbookControllerTestCases.ListJumpsExceptionCases))]
+    public async Task TestListJumps_ReturnsExceptionWithMessageAndStatusCode(
+        int uspaMembershipNumber, string message,
+        int statusCode, Exception exception)
     {
         // Arrange
-        this.LogbookServiceMock.Setup(x => x.ListJumps(It.IsAny<int>(), It.Ref<int>.IsAny, It.Ref<int>.IsAny))
-            .Throws(new Exception("Random exception"))
+        this.LogbookServiceMock.Setup(x => x.ListJumps(It.Ref<int>.IsAny, It.Ref<int>.IsAny, It.Ref<int>.IsAny))
+            .Throws(exception)
             .Verifiable();
 
         LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
 
         // Act
-        var result = await controller.ListJumps(new ListJumpsRequest());
+        var result = await controller.ListJumps(
+            new ListJumpsRequest()
+            {
+                USPAMembershipNumber = uspaMembershipNumber
+            });
 
         // Verify
         this.LogbookServiceMock.Verify();
@@ -70,7 +76,7 @@ public class LogbookControllerTest
         Assert.IsNotNull(result);
         Assert.IsInstanceOf<ObjectResult>(result);
         Assert.IsInstanceOf<ProblemDetails>(((ObjectResult)result).Value);
-        Assert.That((((ObjectResult)result).Value as ProblemDetails)?.Detail, Is.EqualTo(message));
+        Assert.That((((ObjectResult)result).Value as ProblemDetails)?.Detail, Does.Contain(message));
         Assert.That(((ObjectResult)result).StatusCode, Is.EqualTo(statusCode));
     }
 
@@ -101,7 +107,8 @@ public class LogbookControllerTest
 
     [Test]
     [TestCase("Failed to log jump", StatusCodes.Status500InternalServerError)]
-    public async Task TestLogJump_ReturnsInternalServerErrorWithMessage(string message, int statusCode)
+    public async Task TestLogJump_ReturnsExceptionWithMessageAndStatusCode(
+        string message, int statusCode)
     {
         // Arrange
         this.LogbookServiceMock.Setup(x => x.LogJump(It.Ref<LoggedJump>.IsAny))
@@ -150,18 +157,20 @@ public class LogbookControllerTest
     }
 
     [Test]
-    [TestCase("Failed to edit jump", StatusCodes.Status500InternalServerError)]
-    public async Task TestEditJump_ReturnsInternalServerErrorWithMessage(string message, int statusCode)
+    [TestCaseSource(typeof(LogbookControllerTestCases), nameof(LogbookControllerTestCases.EditJumpExceptionCases))]
+    public async Task TestEditJump_ReturnsInternalServerErrorWithMessage(
+        EditJumpRequest request, string message,
+        int statusCode, Exception exception)
     {
         // Arrange
         this.LogbookServiceMock.Setup(x => x.EditJump(It.Ref<LoggedJump>.IsAny))
-            .Throws(new Exception("Random exception"))
+            .Throws(exception)
             .Verifiable();
 
         LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
 
         // Act
-        var result = await controller.EditJump(new EditJumpRequest());
+        var result = await controller.EditJump(request);
 
         // Verify
         this.LogbookServiceMock.Verify();
@@ -170,7 +179,7 @@ public class LogbookControllerTest
         Assert.IsNotNull(result);
         Assert.IsInstanceOf<ObjectResult>(result);
         Assert.IsInstanceOf<ProblemDetails>(((ObjectResult)result).Value);
-        Assert.That((((ObjectResult)result).Value as ProblemDetails)?.Detail, Is.EqualTo(message));
+        Assert.That((((ObjectResult)result).Value as ProblemDetails)?.Detail, Does.Contain(message));
         Assert.That(((ObjectResult)result).StatusCode, Is.EqualTo(statusCode));
     }
 
@@ -200,18 +209,20 @@ public class LogbookControllerTest
     }
 
     [Test]
-    [TestCase("Failed to delete jump", StatusCodes.Status500InternalServerError)]
-    public async Task TestDeleteJump_ReturnsInternalServerErrorWithMessage(string message, int statusCode)
+    [TestCaseSource(typeof(LogbookControllerTestCases), nameof(LogbookControllerTestCases.DeleteJumpExceptionCases))]
+    public async Task TestDeleteJump_ReturnsErrorWithMessageAndStatusCode(
+        DeleteJumpRequest request, string message,
+        int statusCode, Exception exception)
     {
         // Arrange
         this.LogbookServiceMock.Setup(x => x.DeleteJump(It.Ref<LoggedJump>.IsAny))
-            .Throws(new Exception("Random exception"))
+            .Throws(exception)
             .Verifiable();
 
         LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
 
         // Act
-        var result = await controller.DeleteJump(new DeleteJumpRequest());
+        var result = await controller.DeleteJump(request);
 
         // Verify
         this.LogbookServiceMock.Verify();
@@ -220,7 +231,7 @@ public class LogbookControllerTest
         Assert.IsNotNull(result);
         Assert.IsInstanceOf<ObjectResult>(result);
         Assert.IsInstanceOf<ProblemDetails>(((ObjectResult)result).Value);
-        Assert.That((((ObjectResult)result).Value as ProblemDetails)?.Detail, Is.EqualTo(message));
+        Assert.That((((ObjectResult)result).Value as ProblemDetails)?.Detail, Does.Contain(message));
         Assert.That(((ObjectResult)result).StatusCode, Is.EqualTo(statusCode));
     }
 }
