@@ -21,8 +21,7 @@ public class DynamoDBConfigProvider : IServiceProvider
         {
             return new AmazonDynamoDBConfig
             {
-                ServiceURL = dynamoDbConfig.GetValue<string>("LocalServiceUrl"),
-                UseHttp = true,
+                ServiceURL = dynamoDbConfig.GetValue<string>("ServiceUrl"),
             };
         }
         return new AmazonDynamoDBConfig();
