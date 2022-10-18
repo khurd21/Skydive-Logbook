@@ -33,8 +33,6 @@ public class LogbookServiceProvider : ILogbookService
 
     public LoggedJump EditJump(in LoggedJump jump)
     {
-        this.VerifySkydiverExists(
-            uspaMembershipNumber: jump.USPAMembershipNumber);
         this.VerifyJumpExists(
             uspaMembershipNumber: jump.USPAMembershipNumber,
             jumpNumber: jump.JumpNumber);
@@ -48,9 +46,6 @@ public class LogbookServiceProvider : ILogbookService
 
     public IEnumerable<LoggedJump> ListJumps(in int uspaMembershipNumber, in int from = 1, in int to = int.MaxValue)
     {
-        this.VerifySkydiverExists(
-            uspaMembershipNumber: uspaMembershipNumber);
-
         return this.DynamoDBContext
                         .QueryAsync<LoggedJump>(
                             uspaMembershipNumber,
@@ -62,8 +57,6 @@ public class LogbookServiceProvider : ILogbookService
 
     public LoggedJump LogJump(in LoggedJump jump)
     {
-        this.VerifySkydiverExists(
-            uspaMembershipNumber: jump.USPAMembershipNumber);
         this.VerifyJumpDoesNotExist(
             uspaMembershipNumber: jump.USPAMembershipNumber,
             jumpNumber: jump.JumpNumber);
@@ -73,14 +66,6 @@ public class LogbookServiceProvider : ILogbookService
                 .Wait();
 
         return jump;
-    }
-
-    private void VerifySkydiverExists(in int uspaMembershipNumber)
-    {
-        if (this.DynamoDBContext.LoadAsync<SkydiverInfo>(uspaMembershipNumber).Result == null)
-        {
-            throw new SkydiverNotFoundException(uspaMembershipNumber);
-        }
     }
 
     private void VerifyJumpExists(in int uspaMembershipNumber, in int jumpNumber)

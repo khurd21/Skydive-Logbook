@@ -16,13 +16,6 @@ public static class LogbookControllerTestCases
             StatusCodes.Status500InternalServerError,
             new Exception("Random exception")
         },
-        new object[]
-        {
-            123456,
-            "Skydiver with USPA membership number 123456 not found",
-            StatusCodes.Status404NotFound,
-            new SkydiverNotFoundException(123456)
-        },
     };
 
     public static readonly object[] EditJumpExceptionCases =
@@ -40,20 +33,6 @@ public static class LogbookControllerTestCases
             "Failed to edit jump",
             StatusCodes.Status500InternalServerError,
             new Exception("Random exception"),
-        },
-        new object[]
-        {
-            new EditJumpRequest()
-            {
-                Jump = new LoggedJump()
-                {
-                    USPAMembershipNumber = 123456,
-                    JumpNumber = 1,
-                },
-            },
-            "Skydiver with USPA membership number 123456 not found",
-            StatusCodes.Status404NotFound,
-            new SkydiverNotFoundException(123456),
         },
         new object[]
         {

@@ -4,12 +4,14 @@ using Logbook.Responses.Logbook;
 using LogbookService.Dependencies.LogbookService;
 using LogbookService.Exceptions;
 using LogbookService.Records;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Logbook.Controllers;
 
 
 [ApiController]
+[Authorize]
 [Route("logbook")]
 public sealed class LogbookController : ControllerBase, ILogbookAPI
 {

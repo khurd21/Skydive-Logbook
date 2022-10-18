@@ -74,15 +74,15 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
         {
             new()
             {
-                AttributeName = nameof(SkydiverInfo.USPAMembershipNumber),
-                AttributeType = ScalarAttributeType.N,
+                AttributeName = nameof(SkydiverInfo.Email),
+                AttributeType = ScalarAttributeType.S,
             },
         };
         List<KeySchemaElement> keySchemaElements = new()
         {
             new()
             {
-                AttributeName = nameof(SkydiverInfo.USPAMembershipNumber),
+                AttributeName = nameof(SkydiverInfo.Email),
                 KeyType = KeyType.HASH,
             },
         };

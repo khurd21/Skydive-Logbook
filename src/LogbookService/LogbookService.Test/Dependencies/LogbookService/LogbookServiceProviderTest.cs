@@ -107,14 +107,6 @@ public class LogbookServiceProviderTest
             .Returns(Task.FromResult(new LoggedJump()))
             .Verifiable();
 
-        this.DynamoDBContextMock
-            .Setup(
-                context => context.LoadAsync<SkydiverInfo>(
-                    It.IsAny<int>(),
-                    It.Ref<CancellationToken>.IsAny))
-            .Returns(Task.FromResult(new SkydiverInfo()))
-            .Verifiable();
-
         // Act
         var result = this.LogbookServiceProvider.EditJump(jump);
 
@@ -124,25 +116,6 @@ public class LogbookServiceProviderTest
         // Assert
         Assert.NotNull(result);
         Assert.That(result, Is.EqualTo(jump));
-    }
-
-    [Test]
-    public void EditJump_ThrowsSkydiverNotFoundException()
-    {
-        // Arrange
-        this.DynamoDBContextMock
-            .Setup(
-                context => context.LoadAsync<SkydiverInfo>(
-                    It.IsAny<int>(),
-                    It.Ref<CancellationToken>.IsAny))
-            .Returns(Task.FromResult<SkydiverInfo>(null!))
-            .Verifiable();
-
-        // Act
-        Assert.Throws<SkydiverNotFoundException>(() => this.LogbookServiceProvider.EditJump(new LoggedJump()));
-
-        // Verify
-        this.DynamoDBContextMock.Verify();
     }
 
     [Test]
@@ -158,14 +131,6 @@ public class LogbookServiceProviderTest
             .Returns(Task.FromResult<LoggedJump>(null!))
             .Verifiable();
 
-        this.DynamoDBContextMock
-            .Setup(
-                context => context.LoadAsync<SkydiverInfo>(
-                    It.IsAny<int>(),
-                    It.Ref<CancellationToken>.IsAny))
-            .Returns(Task.FromResult(new SkydiverInfo()))
-            .Verifiable();
-
         // Act
         Assert.Throws<JumpNotFoundException>(() => this.LogbookServiceProvider.EditJump(new LoggedJump()));
 
@@ -177,14 +142,6 @@ public class LogbookServiceProviderTest
     public void ListJumps_ReturnsListLoggedJumps()
     {
         // Arrange
-        this.DynamoDBContextMock
-            .Setup(
-                context => context.LoadAsync<SkydiverInfo>(
-                    It.IsAny<int>(),
-                    It.Ref<CancellationToken>.IsAny))
-            .Returns(Task.FromResult(new SkydiverInfo()))
-            .Verifiable();
-
         this.DynamoDBContextMock
             .Setup(
                 context => context.QueryAsync<LoggedJump>(
@@ -205,24 +162,5 @@ public class LogbookServiceProviderTest
         // Assert
         Assert.NotNull(result);
         Assert.That(result, Is.EqualTo(new List<LoggedJump>()));
-    }
-
-    [Test]
-    public void ListJumps_ThrowsSkydiverNotFoundException()
-    {
-        // Arrange
-        this.DynamoDBContextMock
-            .Setup(
-                context => context.LoadAsync<SkydiverInfo>(
-                    It.IsAny<int>(),
-                    It.Ref<CancellationToken>.IsAny))
-            .Returns(Task.FromResult<SkydiverInfo>(null!))
-            .Verifiable();
-
-        // Act
-        Assert.Throws<SkydiverNotFoundException>(() => this.LogbookServiceProvider.ListJumps(123456));
-
-        // Verify
-        this.DynamoDBContextMock.Verify();
     }
 }
