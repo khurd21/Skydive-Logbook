@@ -1,5 +1,6 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Logbook.Authorization;
 using LogbookService.Dependencies.AuthenticationService;
 using LogbookService.Dependencies.DynamoDB;
 using LogbookService.Dependencies.LogbookService;
@@ -23,19 +24,22 @@ builder.Services
     .AddSingleton<IDynamoDBContext>(
         provider => (DynamoDBContext)new DynamoDBContextProvider(provider.GetService<AmazonDynamoDBClient>()!, provider.GetService<DynamoDBContextConfig>()!).GetService(typeof(DynamoDBContext))!)
     .AddSingleton<ILogbookService, LogbookServiceProvider>()
+    //
     .AddSingleton<IAuthenticationService, AuthenticationServiceProvider>()
+    .AddScoped<IJwtUtils, JwtUtils>()
+    //
     .AddSingleton<IDynamoDBTableManager, DynamoDBTableManager>()
     .AddSingleton<IConfiguration>(builder.Configuration)
     .AddSingleton<ILogger>(provider => provider.GetService<ILoggerFactory>()!.CreateLogger("LogbookServiceClient"));
 
-
-builder.Services
-    .AddIdentity<IdentityUser, IdentityRole>();
+//
+builder.Services.AddCors();
+//
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -48,14 +52,23 @@ if (app.Environment.IsDevelopment())
     tableManager.CreateTables();
 
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // app.UseSwagger();
+    // app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
+//
 app.UseAuthorization();
-app.UseAuthentication();
+//
+
+// 
+app.UseCors(builder => builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+app.UseMiddleware<ErrorHandlerMiddleware>();
+app.UseMiddleware<JwtMiddleware>();
+//
 
 app.MapControllers();
 

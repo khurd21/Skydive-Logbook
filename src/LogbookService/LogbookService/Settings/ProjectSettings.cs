@@ -2,11 +2,13 @@ namespace LogbookService.Settings;
 
 public static class ProjectSettings
 {
-    public static string AwsEncryptionArn => File.ReadAllText(Path.Combine(_solutionDirectory, "aws-encryption-arn.txt"));
+    public static string AwsEncryptionArn => File.ReadAllText(Path.Combine(_keyDirectory, _awsEncryptionArn));
 
-    public static string JwtToken => File.ReadAllText(Path.Combine(_solutionDirectory, "jwt-token.txt"));
+    public static string JwtToken => File.ReadAllText(Path.Combine(_keyDirectory, _jwtToken));
 
     private static string _solutionDirectory = ProjectSettings.GetSolutionDirectory().FullName;
+
+    private static string _keyDirectory = Path.Combine(_solutionDirectory, "keys");
 
     private static string _awsEncryptionArn = "aws-encryption-arn.key";
 

@@ -1,10 +1,10 @@
 using Logbook.APIs;
+using Logbook.Authorization;
 using Logbook.Requests.Authentication;
 using Logbook.Responses.Authentication;
 using LogbookService.Dependencies.AuthenticationService;
 using LogbookService.Exceptions;
 using LogbookService.Records;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Logbook.Controllers;

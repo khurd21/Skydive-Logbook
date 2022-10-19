@@ -1,7 +1,8 @@
 using Amazon.DynamoDBv2.DataModel;
 using LogbookService.Exceptions;
 using LogbookService.Records;
-using Microsoft.Extensions.Logging;
+
+using static BCrypt.Net.BCrypt;
 
 namespace LogbookService.Dependencies.AuthenticationService;
 
@@ -18,7 +19,7 @@ public class AuthenticationServiceProvider : IAuthenticationService
     {
         SkydiverInfo? skydiver = this.DynamoDBContext.LoadAsync<SkydiverInfo>(email).Result;
 
-        if (skydiver is null || skydiver.PasswordHash != password)
+        if (skydiver is null || (Verify(password, skydiver.PasswordHash) is false))
         {
             throw new SkydiverNotFoundException("Skydiver email or password is incorrect");
         }
@@ -63,7 +64,7 @@ public class AuthenticationServiceProvider : IAuthenticationService
             Email = skydiverInfo.Email,
             FirstName = skydiverInfo.FirstName,
             LastName = skydiverInfo.LastName,
-            PasswordHash = password,
+            PasswordHash = HashPassword(password),
             USPAMembershipNumber = skydiverInfo.USPAMembershipNumber,
             USPALicenseNumber = skydiverInfo.USPALicenseNumber,
         };

@@ -1,5 +1,4 @@
 using Amazon.DynamoDBv2.DataModel;
-using LogbookService.Dependencies.AuthenticationService;
 using LogbookService.Records;
 
 namespace Logbook.Authorization;
