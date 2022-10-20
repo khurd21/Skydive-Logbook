@@ -26,6 +26,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
     }
 
     [HttpGet("listjumps")]
+    [Authorize]
     [ProducesResponseType(typeof(ListJumpsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListJumps([FromQuery] ListJumpsRequest request)

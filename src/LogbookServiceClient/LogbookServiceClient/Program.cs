@@ -3,7 +3,11 @@ using Amazon.DynamoDBv2.DataModel;
 using LogbookService.Dependencies.AuthenticationService;
 using LogbookService.Dependencies.DynamoDB;
 using LogbookService.Dependencies.LogbookService;
+using LogbookService.Settings;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Server.IIS;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +27,20 @@ builder.Services
     .AddSingleton<IDynamoDBContext>(
         provider => (DynamoDBContext)new DynamoDBContextProvider(provider.GetService<AmazonDynamoDBClient>()!, provider.GetService<DynamoDBContextConfig>()!).GetService(typeof(DynamoDBContext))!)
     .AddSingleton<ILogbookService, LogbookServiceProvider>()
-    .AddSingleton<IAuthenticationService, AuthenticationServiceProvider>()
+    // .AddSingleton<IAuthenticationService, AuthenticationServiceProvider>()
     .AddSingleton<IDynamoDBTableManager, DynamoDBTableManager>()
     .AddSingleton<IConfiguration>(builder.Configuration)
     .AddSingleton<ILogger>(provider => provider.GetService<ILoggerFactory>()!.CreateLogger("LogbookServiceClient"));
 
-
 builder.Services
-    .AddIdentity<IdentityUser, IdentityRole>();
+    .AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+    .AddNegotiate()
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = ProjectSettings.GoogleClientId;
+        googleOptions.ClientSecret = ProjectSettings.GoogleClientSecret;
+    });
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -53,9 +63,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

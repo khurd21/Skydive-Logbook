@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Logbook.Controllers;
 
-[ApiController]
-[Authorize]
+// [ApiController]
+// [Authorize]
 [Route("account")]
 public sealed class AccountController : ControllerBase, IAccountAPI
 {
