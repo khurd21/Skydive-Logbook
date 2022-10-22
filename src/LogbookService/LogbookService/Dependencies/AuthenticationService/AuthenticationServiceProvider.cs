@@ -68,8 +68,8 @@ public class AuthenticationServiceProvider : IAuthenticationService
             USPAMembershipNumber = skydiverInfo.USPAMembershipNumber,
             USPALicenseNumber = skydiverInfo.USPALicenseNumber,
         };
-        this.DynamoDBContext.SaveAsync(skydiver).Wait();
-        this.DynamoDBContext.SaveAsync($"uspaNumber#{skydiverInfo.USPAMembershipNumber}").Wait();
+        this.DynamoDBContext.SaveAsync<SkydiverInfo>(skydiver).Wait();
+        this.DynamoDBContext.SaveAsync<SkydiverInfo>(new SkydiverInfo() { Email = $"uspaNumber#{skydiverInfo.USPAMembershipNumber}" }).Wait();
         return skydiver;
     }
 }

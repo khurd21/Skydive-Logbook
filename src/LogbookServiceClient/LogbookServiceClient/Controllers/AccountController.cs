@@ -67,6 +67,7 @@ public sealed class AccountController : ControllerBase, IAccountAPI
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] AuthenticateRequest request)
     {
         this.Logger.LogInformation($"{nameof(this.Login)} called");

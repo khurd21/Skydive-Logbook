@@ -10,6 +10,7 @@
   },
   "profiles": {
     "Logbook": {
+      "authenticationMode": "Windows",
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
