@@ -4,9 +4,12 @@ using LogbookService.Dependencies.AuthenticationService;
 using LogbookService.Dependencies.DynamoDB;
 using LogbookService.Dependencies.LogbookService;
 using LogbookService.Settings;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Server.IIS;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,12 +36,23 @@ builder.Services
     .AddSingleton<ILogger>(provider => provider.GetService<ILoggerFactory>()!.CreateLogger("LogbookServiceClient"));
 
 builder.Services
-    .AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-    .AddNegotiate()
-    .AddGoogle(googleOptions =>
+    .AddAuthentication(options =>
     {
-        googleOptions.ClientId = ProjectSettings.GoogleClientId;
-        googleOptions.ClientSecret = ProjectSettings.GoogleClientSecret;
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    })
+    .AddCookie()
+    .AddNegotiate()
+    .AddGoogle(options =>
+    {
+        options.ClientId = ProjectSettings.GoogleClientId;
+        options.ClientSecret = ProjectSettings.GoogleClientSecret;
+        options.SaveTokens = true;
+        /*options.Events.OnRedirectToAuthorizationEndpoint = context =>
+        {
+            context.Response.Redirect(context.RedirectUri + "&prompt=consent");
+            return Task.CompletedTask;
+        };*/
     });
 
 
@@ -46,6 +60,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
 
 var app = builder.Build();
 

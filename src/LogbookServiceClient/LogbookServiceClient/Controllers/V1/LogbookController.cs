@@ -7,12 +7,13 @@ using LogbookService.Records;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Logbook.Controllers;
+namespace Logbook.Controllers.V1;
 
 
 [ApiController]
+[ApiVersion("1.0")]
 [Authorize]
-[Route("logbook")]
+[Route("api/v{version:ApiVersion}/logbook")]
 public sealed class LogbookController : ControllerBase, ILogbookAPI
 {
     private ILogger<LogbookController> Logger { get; init; }
@@ -26,7 +27,6 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
     }
 
     [HttpGet("listjumps")]
-    [Authorize]
     [ProducesResponseType(typeof(ListJumpsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListJumps([FromQuery] ListJumpsRequest request)

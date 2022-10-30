@@ -1,4 +1,4 @@
-using Logbook.Controllers;
+using Logbook.Controllers.V1;
 using Logbook.Requests.Logbook;
 using Logbook.Responses.Logbook;
 using LogbookService.Dependencies.LogbookService;
