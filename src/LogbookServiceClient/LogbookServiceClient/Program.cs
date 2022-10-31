@@ -1,5 +1,6 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Logbook.Dependencies.Mapper;
 using LogbookService.Dependencies.AuthenticationService;
 using LogbookService.Dependencies.DynamoDB;
 using LogbookService.Dependencies.LogbookService;
@@ -34,6 +35,14 @@ builder.Services
     .AddSingleton<IDynamoDBTableManager, DynamoDBTableManager>()
     .AddSingleton<IConfiguration>(builder.Configuration)
     .AddSingleton<ILogger>(provider => provider.GetService<ILoggerFactory>()!.CreateLogger("LogbookServiceClient"));
+
+
+// Services from LogbookServiceClient
+builder.Services
+    .AddSingleton<AutoMapper.IConfigurationProvider>(
+        provider =>(AutoMapper.IConfigurationProvider)new MapperConfigurationProvider().GetService(typeof(AutoMapper.IConfigurationProvider))!)
+    .AddSingleton<AutoMapper.IMapper>(
+        provider => (AutoMapper.IMapper)new AutoMapperProvider(provider.GetService<AutoMapper.IConfigurationProvider>()!).GetService(typeof(AutoMapper.IMapper))!);
 
 builder.Services
     .AddAuthentication(options =>

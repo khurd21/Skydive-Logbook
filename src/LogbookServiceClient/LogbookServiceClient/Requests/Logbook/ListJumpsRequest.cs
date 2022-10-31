@@ -5,9 +5,6 @@ namespace Logbook.Requests.Logbook;
 
 public class ListJumpsRequest
 {
-    [Required(ErrorMessage=$"{nameof(this.USPAMembershipNumber)} is required")]
-    public int USPAMembershipNumber { get; init; }
-
     [Range(1, int.MaxValue, ErrorMessage=$"{nameof(this.From)} must be greater than 0")]
     public int From { get; init; } = 1;
 

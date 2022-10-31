@@ -107,7 +107,7 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
         {
             new()
             {
-                AttributeName = nameof(LoggedJump.USPAMembershipNumber),
+                AttributeName = nameof(LoggedJump.Id),
                 AttributeType = ScalarAttributeType.N,
             },
             new()
@@ -120,7 +120,7 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
         {
             new()
             {
-                AttributeName = nameof(LoggedJump.USPAMembershipNumber),
+                AttributeName = nameof(LoggedJump.Id),
                 KeyType = KeyType.HASH,
             },
             new()

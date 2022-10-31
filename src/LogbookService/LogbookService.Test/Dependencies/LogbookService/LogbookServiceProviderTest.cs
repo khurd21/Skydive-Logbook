@@ -32,28 +32,30 @@ public class LogbookServiceProviderTest
     public void DeleteJump_ReturnsValidLoggedJump()
     {
         // Arrange
+        string id = "123456";
+        int jumpNumber = 1;
         LoggedJump jump = new()
         {
-            USPAMembershipNumber = 123456,
-            JumpNumber = 1,
+            Id = id,
+            JumpNumber = jumpNumber,
         };
 
         this.DynamoDBContextMock
-            .Setup(context => context.DeleteAsync<LoggedJump>(It.IsAny<int>(), It.IsAny<int>(), It.Ref<CancellationToken>.IsAny))
+            .Setup(context => context.DeleteAsync<LoggedJump>(It.IsAny<string>(), It.IsAny<int>(), It.Ref<CancellationToken>.IsAny))
             .Returns(Task.CompletedTask)
             .Verifiable();
 
         this.DynamoDBContextMock
             .Setup(
                 context => context.LoadAsync<LoggedJump>(
-                    It.IsAny<int>(),
+                    It.IsAny<string>(),
                     It.IsAny<int>(),
                     It.Ref<CancellationToken>.IsAny))
-            .Returns(Task.FromResult(new LoggedJump()))
+            .Returns(Task.FromResult(jump))
             .Verifiable();
 
         // Act
-        var result = this.LogbookServiceProvider.DeleteJump(jump);
+        var result = this.LogbookServiceProvider.DeleteJump(id, jumpNumber);
 
         // Verify
         this.DynamoDBContextMock.Verify();
@@ -70,14 +72,14 @@ public class LogbookServiceProviderTest
         this.DynamoDBContextMock
             .Setup(
                 context => context.LoadAsync<LoggedJump>(
-                    It.IsAny<int>(),
+                    It.IsAny<string>(),
                     It.IsAny<int>(),
                     It.Ref<CancellationToken>.IsAny))
             .Returns(Task.FromResult<LoggedJump>(null!))
             .Verifiable();
 
         // Act
-        Assert.Throws<JumpNotFoundException>(() => this.LogbookServiceProvider.DeleteJump(new LoggedJump()));
+        Assert.Throws<JumpNotFoundException>(() => this.LogbookServiceProvider.DeleteJump("123456", 1));
 
         // Verify
         this.DynamoDBContextMock.Verify();
@@ -89,7 +91,7 @@ public class LogbookServiceProviderTest
         // Arrange
         LoggedJump jump = new()
         {
-            USPAMembershipNumber = 123456,
+            Id = "123456",
             JumpNumber = 1,
         };
 
@@ -101,7 +103,7 @@ public class LogbookServiceProviderTest
         this.DynamoDBContextMock
             .Setup(
                 context => context.LoadAsync<LoggedJump>(
-                    It.IsAny<int>(),
+                    It.IsAny<string>(),
                     It.IsAny<int>(),
                     It.Ref<CancellationToken>.IsAny))
             .Returns(Task.FromResult(new LoggedJump()))
@@ -125,7 +127,7 @@ public class LogbookServiceProviderTest
         this.DynamoDBContextMock
             .Setup(
                 context => context.LoadAsync<LoggedJump>(
-                    It.IsAny<int>(),
+                    It.IsAny<string>(),
                     It.IsAny<int>(),
                     It.Ref<CancellationToken>.IsAny))
             .Returns(Task.FromResult<LoggedJump>(null!))
@@ -145,7 +147,7 @@ public class LogbookServiceProviderTest
         this.DynamoDBContextMock
             .Setup(
                 context => context.QueryAsync<LoggedJump>(
-                    It.IsAny<int>(),
+                    It.IsAny<string>(),
                     It.IsAny<QueryOperator>(),
                     It.IsAny<IEnumerable<object>>(),
                     It.IsAny<DynamoDBOperationConfig>())
@@ -154,7 +156,7 @@ public class LogbookServiceProviderTest
             .Verifiable();
 
         // Act
-        var result = this.LogbookServiceProvider.ListJumps(123456);
+        var result = this.LogbookServiceProvider.ListJumps("123456");
 
         // Verify
         this.DynamoDBContextMock.Verify();
