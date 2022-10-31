@@ -1,17 +1,13 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Logbook.Dependencies.Mapper;
-using LogbookService.Dependencies.AuthenticationService;
 using LogbookService.Dependencies.DynamoDB;
 using LogbookService.Dependencies.LogbookService;
 using LogbookService.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.Negotiate;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Server.IIS;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +27,6 @@ builder.Services
     .AddSingleton<IDynamoDBContext>(
         provider => (DynamoDBContext)new DynamoDBContextProvider(provider.GetService<AmazonDynamoDBClient>()!, provider.GetService<DynamoDBContextConfig>()!).GetService(typeof(DynamoDBContext))!)
     .AddSingleton<ILogbookService, LogbookServiceProvider>()
-    // .AddSingleton<IAuthenticationService, AuthenticationServiceProvider>()
     .AddSingleton<IDynamoDBTableManager, DynamoDBTableManager>()
     .AddSingleton<IConfiguration>(builder.Configuration)
     .AddSingleton<ILogger>(provider => provider.GetService<ILoggerFactory>()!.CreateLogger("LogbookServiceClient"));

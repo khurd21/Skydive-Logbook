@@ -74,7 +74,7 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
         {
             new()
             {
-                AttributeName = nameof(SkydiverInfo.Email),
+                AttributeName = nameof(SkydiverInfo.Id),
                 AttributeType = ScalarAttributeType.S,
             },
         };
@@ -82,7 +82,7 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
         {
             new()
             {
-                AttributeName = nameof(SkydiverInfo.Email),
+                AttributeName = nameof(SkydiverInfo.Id),
                 KeyType = KeyType.HASH,
             },
         };
@@ -108,7 +108,7 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
             new()
             {
                 AttributeName = nameof(LoggedJump.Id),
-                AttributeType = ScalarAttributeType.N,
+                AttributeType = ScalarAttributeType.S,
             },
             new()
             {

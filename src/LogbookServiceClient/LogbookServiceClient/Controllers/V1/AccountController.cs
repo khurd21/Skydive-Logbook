@@ -1,13 +1,4 @@
 using System.Security.Claims;
-using Logbook.APIs;
-using Logbook.Requests.Authentication;
-using Logbook.Responses.Authentication;
-using LogbookService.Dependencies.AuthenticationService;
-using LogbookService.Exceptions;
-using LogbookService.Records;
-using Microsoft.AspNetCore.Authentication;
-// using Microsoft.AspNetCore.Authentication;
-// using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
