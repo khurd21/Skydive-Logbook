@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogbookService", "LogbookService", "{DF499CF0-300C-45E8-A48A-C3421A6EBA16}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C20E1273-5645-4B54-8293-44EFBBB2BA47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookService", "src\LogbookService\LogbookService\LogbookService.csproj", "{6CB6F371-2F5D-4162-B765-B9BE6FFE93A0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogbookService", "LogbookService", "{B12DC614-CDC9-45F6-A048-5C67F1ED2F09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookService.Test", "src\LogbookService\LogbookService.Test\LogbookService.Test.csproj", "{A7845522-3DEF-4581-857F-0AC125585BA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookService", "src\LogbookService\LogbookService\LogbookService.csproj", "{6D626057-0A0F-4CD7-BA3D-6DD0FB866D02}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogbookServiceClient", "LogbookServiceClient", "{7F1E2AE7-CD82-4530-BA7D-A5437EC2CE3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookService.Test", "src\LogbookService\LogbookService.Test\LogbookService.Test.csproj", "{A68F25C7-627F-4091-9963-B9A4BDF1DDEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookServiceClient", "src\LogbookServiceClient\LogbookServiceClient\LogbookServiceClient.csproj", "{BC468D87-8AB8-45B4-8976-33436179AC1E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogbookServiceClient", "LogbookServiceClient", "{69AD8B8D-8C64-4FED-9066-5E31C69590BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookServiceClient.Test", "src\LogbookServiceClient\LogbookServiceClient.Test\LogbookServiceClient.Test.csproj", "{CCD82707-688A-4FE7-89A7-3D249C8B6635}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookServiceClient", "src\LogbookServiceClient\LogbookServiceClient\LogbookServiceClient.csproj", "{3F8554DA-9BF6-4645-9312-9281B29BCD5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogbookServiceClient.Test", "src\LogbookServiceClient\LogbookServiceClient.Test\LogbookServiceClient.Test.csproj", "{76510C6B-E1DB-443E-B0DD-ADE58DCA4C7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,27 +26,29 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6CB6F371-2F5D-4162-B765-B9BE6FFE93A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CB6F371-2F5D-4162-B765-B9BE6FFE93A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CB6F371-2F5D-4162-B765-B9BE6FFE93A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CB6F371-2F5D-4162-B765-B9BE6FFE93A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7845522-3DEF-4581-857F-0AC125585BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7845522-3DEF-4581-857F-0AC125585BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7845522-3DEF-4581-857F-0AC125585BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7845522-3DEF-4581-857F-0AC125585BA5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC468D87-8AB8-45B4-8976-33436179AC1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC468D87-8AB8-45B4-8976-33436179AC1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC468D87-8AB8-45B4-8976-33436179AC1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC468D87-8AB8-45B4-8976-33436179AC1E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CCD82707-688A-4FE7-89A7-3D249C8B6635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CCD82707-688A-4FE7-89A7-3D249C8B6635}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CCD82707-688A-4FE7-89A7-3D249C8B6635}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CCD82707-688A-4FE7-89A7-3D249C8B6635}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D626057-0A0F-4CD7-BA3D-6DD0FB866D02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D626057-0A0F-4CD7-BA3D-6DD0FB866D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D626057-0A0F-4CD7-BA3D-6DD0FB866D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D626057-0A0F-4CD7-BA3D-6DD0FB866D02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A68F25C7-627F-4091-9963-B9A4BDF1DDEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A68F25C7-627F-4091-9963-B9A4BDF1DDEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A68F25C7-627F-4091-9963-B9A4BDF1DDEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A68F25C7-627F-4091-9963-B9A4BDF1DDEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F8554DA-9BF6-4645-9312-9281B29BCD5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F8554DA-9BF6-4645-9312-9281B29BCD5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F8554DA-9BF6-4645-9312-9281B29BCD5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F8554DA-9BF6-4645-9312-9281B29BCD5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76510C6B-E1DB-443E-B0DD-ADE58DCA4C7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76510C6B-E1DB-443E-B0DD-ADE58DCA4C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76510C6B-E1DB-443E-B0DD-ADE58DCA4C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76510C6B-E1DB-443E-B0DD-ADE58DCA4C7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{6CB6F371-2F5D-4162-B765-B9BE6FFE93A0} = {DF499CF0-300C-45E8-A48A-C3421A6EBA16}
-		{A7845522-3DEF-4581-857F-0AC125585BA5} = {DF499CF0-300C-45E8-A48A-C3421A6EBA16}
-		{BC468D87-8AB8-45B4-8976-33436179AC1E} = {7F1E2AE7-CD82-4530-BA7D-A5437EC2CE3F}
-		{CCD82707-688A-4FE7-89A7-3D249C8B6635} = {7F1E2AE7-CD82-4530-BA7D-A5437EC2CE3F}
+		{B12DC614-CDC9-45F6-A048-5C67F1ED2F09} = {C20E1273-5645-4B54-8293-44EFBBB2BA47}
+		{6D626057-0A0F-4CD7-BA3D-6DD0FB866D02} = {B12DC614-CDC9-45F6-A048-5C67F1ED2F09}
+		{A68F25C7-627F-4091-9963-B9A4BDF1DDEF} = {B12DC614-CDC9-45F6-A048-5C67F1ED2F09}
+		{69AD8B8D-8C64-4FED-9066-5E31C69590BE} = {C20E1273-5645-4B54-8293-44EFBBB2BA47}
+		{3F8554DA-9BF6-4645-9312-9281B29BCD5F} = {69AD8B8D-8C64-4FED-9066-5E31C69590BE}
+		{76510C6B-E1DB-443E-B0DD-ADE58DCA4C7D} = {69AD8B8D-8C64-4FED-9066-5E31C69590BE}
 	EndGlobalSection
 EndGlobal

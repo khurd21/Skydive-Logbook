@@ -3,10 +3,12 @@ using AutoMapper;
 using Logbook.APIs;
 using Logbook.Requests.Logbook;
 using Logbook.Responses.Logbook;
+using LogbookService.Records.Enums;
 using LogbookService.Dependencies.LogbookService;
 using LogbookService.Exceptions;
 using LogbookService.Records;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Logbook.Controllers.V1;
@@ -15,6 +17,7 @@ namespace Logbook.Controllers.V1;
 [ApiController]
 [ApiVersion("1.0")]
 [Authorize]
+[EnableCors]
 [Route("api/v{version:ApiVersion}/logbook")]
 public sealed class LogbookController : ControllerBase, ILogbookAPI
 {
@@ -32,7 +35,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         this.Mapper = mapper;
     }
 
-    [HttpGet("listjumps")]
+    [HttpGet]
     [ProducesResponseType(typeof(ListJumpsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListJumps([FromQuery] ListJumpsRequest request)
@@ -40,12 +43,39 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         this.Logger.LogInformation($"{nameof(this.ListJumps)} called");
         try
         {
+            // return this.Ok(new Dictionary<string, string> { { "test", "test" } });
             string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             IEnumerable<LoggedJump> jumps = this.LogbookService.ListJumps(
                 id: userId,
                 from: request.From,
                 to: request.To);
 
+            return await Task.FromResult(this.Ok(
+                new ListJumpsResponse()
+                {
+                    Jumps = new List<LoggedJump>()
+                    {
+                        new()
+                        {
+                            Date = DateTime.Now,
+                            JumpNumber = 1,
+                            JumpCategory = JumpCategory.BELLY,
+                        },
+                        new()
+                        {
+                            Date = DateTime.Now,
+                            JumpNumber = 2,
+                            JumpCategory = JumpCategory.BELLY,
+                        },
+                        new()
+                        {
+                            Date = DateTime.Now,
+                            JumpNumber = 3,
+                            JumpCategory = JumpCategory.BELLY,
+                        },
+                    }
+                }
+            ));
             return await Task.FromResult(this.Ok(
                 new ListJumpsResponse() { Jumps = jumps }));
         }
@@ -71,7 +101,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         }
     }
 
-    [HttpPost("logjump")]
+    [HttpPost]
     [ProducesResponseType(typeof(LogJumpResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> LogJump([FromBody] LogJumpRequest request)
@@ -115,7 +145,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         }
     }
 
-    [HttpPut("editjump")]
+    [HttpPut]
     [ProducesResponseType(typeof(EditJumpResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditJump([FromBody] EditJumpRequest request)
@@ -159,7 +189,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         }
     }
 
-    [HttpDelete("deletejump")]
+    [HttpDelete]
     [ProducesResponseType(typeof(DeleteJumpResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteJump([FromQuery] DeleteJumpRequest request)
