@@ -11,7 +11,15 @@ public sealed class SkydiverInfo
     public string? Id { get; init; }
 
     [DynamoDBProperty]
-    [Required(ErrorMessage=$"{nameof(this.USPAMembershipNumber)} is required")]
+    public string? FirstName { get; init; }
+
+    [DynamoDBProperty]
+    public string? LastName { get; init; }
+
+    [DynamoDBProperty]
+    public string? Email { get; init; }
+
+    [DynamoDBProperty]
     public int USPAMembershipNumber { get; init; }
 
     [DynamoDBProperty]

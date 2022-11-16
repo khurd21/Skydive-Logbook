@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Amazon.DynamoDBv2.DataModel;
 using LogbookService.Records.Enums;
-using LogbookService.Records.PropertyConverters;
 
 namespace LogbookService.Records;
 
@@ -24,6 +23,9 @@ public sealed class LoggedJump
 
     [DynamoDBProperty]
     public string? Aircraft { get; init; }
+
+    [DynamoDBProperty]
+    public int? Altitude { get; init; }
 
     [DynamoDBProperty]
     public string? Parachute { get; init; }
