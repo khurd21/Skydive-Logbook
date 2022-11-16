@@ -10,6 +10,7 @@ using LogbookService.Dependencies.LogbookService;
 using Logbook.Dependencies.Mapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
