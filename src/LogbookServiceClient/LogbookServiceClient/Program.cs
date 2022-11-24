@@ -10,7 +10,6 @@ using LogbookService.Dependencies.LogbookService;
 using Logbook.Dependencies.Mapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +24,7 @@ builder.Logging
 // From LogbookService
 builder.Services
     .AddSingleton<AmazonDynamoDBConfig>(
-        provider => (AmazonDynamoDBConfig)new DynamoDBConfigProvider(provider.GetService<IConfiguration>()!).GetService(typeof(AmazonDynamoDBConfig))!)
-    .AddSingleton<AmazonDynamoDBClient>(
+        provider => (AmazonDynamoDBConfig)new DynamoDBConfigProvider(provider.GetService<IConfiguration>()!).GetService(typeof(AmazonDynamoDBConfig))!) .AddSingleton<AmazonDynamoDBClient>(
         provider => (AmazonDynamoDBClient)new DynamoDBClientProvider(provider.GetService<AmazonDynamoDBConfig>()!).GetService(typeof(AmazonDynamoDBClient))!)
     .AddSingleton<DynamoDBContextConfig>(
         provider => (DynamoDBContextConfig)new DynamoDBContextConfigProvider(provider.GetService<IConfiguration>()!).GetService(typeof(DynamoDBContextConfig))!)
@@ -54,7 +52,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedAccount = false;
 })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 

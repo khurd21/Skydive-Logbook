@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService';
 import { Tabs, Tab, TabPanel, TabList } from 'react-tabs';
+import { JumpType } from './jump-info/JumpType';
 import 'react-tabs/style/react-tabs.css';
+
+const logbookApi = 'api/v1/logbook';
 
 export class Logbook extends Component {
     static displayName = Logbook.name;
@@ -16,7 +19,6 @@ export class Logbook extends Component {
     }
 
     componentDidMount() {
-        // Call the async function to set the user name at the same time as the logbook data
         this.setUserName();
         this.populateLogbookData();
     }
@@ -30,16 +32,13 @@ export class Logbook extends Component {
 
     async populateLogbookData() {
         const token = await authService.getAccessToken();
-        const response = await fetch('api/v1/logbook?From=1&To=10', {
+        const response = await fetch(logbookApi + '?From=1&To=10', {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
         this.setState({ logbookEntries: data.jumps, loading: true });
     }
 
-
-    // I want to render a form here to add a new jump to the logbook
-    // I want to render a table here to show the logbook entries
     static renderLogJumpForm(logbookEntries) {
         return (
             <form>
@@ -61,6 +60,7 @@ export class Logbook extends Component {
     }
 
     static renderLogbookTable(logbookEntries) {
+
         return (
             <table className='table table-striped' aria-labelledby="tabelLabel">
                 <thead>
@@ -75,7 +75,7 @@ export class Logbook extends Component {
                         <tr key={logbookEntry.jumpNumber}>
                             <td>{logbookEntry.date}</td>
                             <td>{logbookEntry.jumpNumber}</td>
-                            <td>{logbookEntry.jumpCategory}</td>
+                            <td>{JumpType.jumpTypeToString(logbookEntry.jumpCategory)}</td>
                         </tr>
                     )}
                 </tbody>

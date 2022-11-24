@@ -43,7 +43,6 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         this.Logger.LogInformation($"{nameof(this.ListJumps)} called");
         try
         {
-            // return this.Ok(new Dictionary<string, string> { { "test", "test" } });
             string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             IEnumerable<LoggedJump> jumps = this.LogbookService.ListJumps(
                 id: userId,
