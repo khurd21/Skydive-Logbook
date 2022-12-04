@@ -1,6 +1,6 @@
 import ApiAuthorzationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
 import Home from "./components/Home";
-import { Logbook } from "./components/Logbook";
+import Logbook from "./components/Logbook";
 import PersonalInfo from "./components/PersonalInfo";
 
 const AppRoutes = [

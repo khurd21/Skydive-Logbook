@@ -49,7 +49,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
                 from: request.From,
                 to: request.To);
 
-            return await Task.FromResult(this.Ok(
+            /*return await Task.FromResult(this.Ok(
                 new ListJumpsResponse()
                 {
                     Jumps = new List<LoggedJump>()
@@ -58,7 +58,8 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
                         {
                             Date = DateTime.Now,
                             JumpNumber = 1,
-                            JumpCategory = JumpCategory.BELLY,
+                            Dropzone = "Kapowsin",
+                            JumpCategory = JumpCategory.FREEFLY,
                         },
                         new()
                         {
@@ -74,7 +75,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
                         },
                     }
                 }
-            ));
+            ));*/
             return await Task.FromResult(this.Ok(
                 new ListJumpsResponse() { Jumps = jumps }));
         }
@@ -196,6 +197,7 @@ public sealed class LogbookController : ControllerBase, ILogbookAPI
         this.Logger.LogInformation($"{nameof(this.DeleteJump)} called");
         try
         {
+            this.Logger.LogInformation($"Deleting jump {request.JumpNumber}");
             LoggedJump loggedJump = this.LogbookService.DeleteJump(
                 id: this.User.FindFirstValue(ClaimTypes.NameIdentifier),
                 jumpNumber: request.JumpNumber);

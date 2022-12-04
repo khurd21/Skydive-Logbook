@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Amazon.DynamoDBv2.DataModel;
 using LogbookService.Records.Enums;
 
@@ -9,6 +10,7 @@ public sealed class LoggedJump
 {
     [DynamoDBHashKey]
     [Required]
+    [JsonIgnore]
     public string? Id { get; init; }
 
     [DynamoDBRangeKey]
