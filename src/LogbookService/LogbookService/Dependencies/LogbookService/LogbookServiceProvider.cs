@@ -18,14 +18,14 @@ public class LogbookServiceProvider : ILogbookService
         this.DynamoDBContext = dynamoDBContext;
     }
 
-    public LoggedJump DeleteJump(in LoggedJump jump)
+    public LoggedJump DeleteJump(in string id, in int jumpNumber)
     {
-        this.VerifyJumpExists(
-            uspaMembershipNumber: jump.USPAMembershipNumber,
-            jumpNumber: jump.JumpNumber);
+        LoggedJump jump = this.VerifyJumpExists(
+            id: id,
+            jumpNumber: jumpNumber);
 
         this.DynamoDBContext
-                .DeleteAsync<LoggedJump>(jump.USPAMembershipNumber, jump.JumpNumber)
+                .DeleteAsync<LoggedJump>(id, jumpNumber)
                 .Wait();
 
         return jump;
@@ -33,10 +33,8 @@ public class LogbookServiceProvider : ILogbookService
 
     public LoggedJump EditJump(in LoggedJump jump)
     {
-        this.VerifySkydiverExists(
-            uspaMembershipNumber: jump.USPAMembershipNumber);
         this.VerifyJumpExists(
-            uspaMembershipNumber: jump.USPAMembershipNumber,
+            id: jump.Id!,
             jumpNumber: jump.JumpNumber);
 
         this.DynamoDBContext
@@ -46,14 +44,11 @@ public class LogbookServiceProvider : ILogbookService
         return jump;
     }
 
-    public IEnumerable<LoggedJump> ListJumps(in int uspaMembershipNumber, in int from = 1, in int to = int.MaxValue)
+    public IEnumerable<LoggedJump> ListJumps(in string id, in int from = 1, in int to = int.MaxValue)
     {
-        this.VerifySkydiverExists(
-            uspaMembershipNumber: uspaMembershipNumber);
-
         return this.DynamoDBContext
                         .QueryAsync<LoggedJump>(
-                            uspaMembershipNumber,
+                            id,
                             QueryOperator.Between,
                             new object[] { from, to })
                         .GetRemainingAsync().Result
@@ -62,10 +57,8 @@ public class LogbookServiceProvider : ILogbookService
 
     public LoggedJump LogJump(in LoggedJump jump)
     {
-        this.VerifySkydiverExists(
-            uspaMembershipNumber: jump.USPAMembershipNumber);
         this.VerifyJumpDoesNotExist(
-            uspaMembershipNumber: jump.USPAMembershipNumber,
+            id: jump.Id!,
             jumpNumber: jump.JumpNumber);
 
         this.DynamoDBContext
@@ -75,27 +68,21 @@ public class LogbookServiceProvider : ILogbookService
         return jump;
     }
 
-    private void VerifySkydiverExists(in int uspaMembershipNumber)
+    private LoggedJump VerifyJumpExists(in string id, in int jumpNumber)
     {
-        if (this.DynamoDBContext.LoadAsync<SkydiverInfo>(uspaMembershipNumber).Result == null)
+        LoggedJump jump = this.DynamoDBContext.LoadAsync<LoggedJump>(id, jumpNumber).Result;
+        if (jump == null)
         {
-            throw new SkydiverNotFoundException(uspaMembershipNumber);
+            throw new JumpNotFoundException(id, jumpNumber);
         }
+        return jump;
     }
 
-    private void VerifyJumpExists(in int uspaMembershipNumber, in int jumpNumber)
+    private void VerifyJumpDoesNotExist(in string id, in int jumpNumber)
     {
-        if (this.DynamoDBContext.LoadAsync<LoggedJump>(uspaMembershipNumber, jumpNumber).Result == null)
+        if (this.DynamoDBContext.LoadAsync<LoggedJump>(id, jumpNumber).Result != null)
         {
-            throw new JumpNotFoundException(uspaMembershipNumber, jumpNumber);
-        }
-    }
-
-    private void VerifyJumpDoesNotExist(in int uspaMembershipNumber, in int jumpNumber)
-    {
-        if (this.DynamoDBContext.LoadAsync<LoggedJump>(uspaMembershipNumber, jumpNumber).Result != null)
-        {
-            throw new JumpAlreadyExistsException(uspaMembershipNumber, jumpNumber);
+            throw new JumpAlreadyExistsException(id, jumpNumber);
         }
     }
 }

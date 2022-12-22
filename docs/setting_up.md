@@ -11,6 +11,7 @@
 ### Setup
 
 Here is a quick guide on how I set up my development environment on MacOS.
+You will also need to install nodejs and npm for the frontend.
 
 ```shell
 $ brew install dotnet

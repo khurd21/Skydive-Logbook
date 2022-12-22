@@ -1,4 +1,6 @@
-using Logbook.Controllers;
+using System.Security.Claims;
+using AutoMapper;
+using Logbook.Controllers.V1;
 using Logbook.Requests.Logbook;
 using Logbook.Responses.Logbook;
 using LogbookService.Dependencies.LogbookService;
@@ -17,11 +19,14 @@ public class LogbookControllerTest
 
     private Mock<ILogbookService> LogbookServiceMock { get; set; } = new();
 
+    private Mock<IMapper> MapperMock { get; set; } = new();
+
     [SetUp]
     public void Setup()
     {
         this.LoggerMock = new();
         this.LogbookServiceMock = new();
+        this.MapperMock = new();
     }
 
     [Test]
@@ -29,11 +34,11 @@ public class LogbookControllerTest
     public async Task TestListJumps_ReturnsListOfJumps(IEnumerable<LoggedJump> jumps)
     {
         // Arrange
-        this.LogbookServiceMock.Setup(x => x.ListJumps(It.IsAny<int>(), It.Ref<int>.IsAny, It.Ref<int>.IsAny))
+        this.LogbookServiceMock.Setup(x => x.ListJumps(It.Ref<string>.IsAny, It.Ref<int>.IsAny, It.Ref<int>.IsAny))
             .Returns(jumps)
             .Verifiable();
 
-        LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
+        LogbookController controller = this.CreateLogbookController();
 
         // Act
         var result = await controller.ListJumps(new ListJumpsRequest());
@@ -56,17 +61,18 @@ public class LogbookControllerTest
         int statusCode, Exception exception)
     {
         // Arrange
-        this.LogbookServiceMock.Setup(x => x.ListJumps(It.Ref<int>.IsAny, It.Ref<int>.IsAny, It.Ref<int>.IsAny))
+        this.LogbookServiceMock.Setup(x => x.ListJumps(It.Ref<string>.IsAny, It.Ref<int>.IsAny, It.Ref<int>.IsAny))
             .Throws(exception)
             .Verifiable();
 
-        LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
+        LogbookController controller = this.CreateLogbookController();
 
         // Act
         var result = await controller.ListJumps(
             new ListJumpsRequest()
             {
-                USPAMembershipNumber = uspaMembershipNumber
+                From = 1,
+                To = 500,
             });
 
         // Verify
@@ -89,7 +95,11 @@ public class LogbookControllerTest
             .Returns(loggedJump)
             .Verifiable();
 
-        LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
+        this.MapperMock.Setup(x => x.Map<LoggedJump>(It.Ref<LogJumpRequest>.IsAny))
+            .Returns(loggedJump)
+            .Verifiable();
+
+        LogbookController controller = this.CreateLogbookController();
 
         // Act
         var result = await controller.LogJump(new LogJumpRequest());
@@ -115,7 +125,11 @@ public class LogbookControllerTest
             .Throws(new Exception("Random exception"))
             .Verifiable();
 
-        LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
+        this.MapperMock.Setup(x => x.Map<LoggedJump>(It.Ref<LogJumpRequest>.IsAny))
+            .Returns(new LoggedJump())
+            .Verifiable();
+
+        LogbookController controller = this.CreateLogbookController();
 
         // Act
         var result = await controller.LogJump(new LogJumpRequest());
@@ -140,7 +154,11 @@ public class LogbookControllerTest
             .Returns(loggedJump)
             .Verifiable();
 
-        LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
+        this.MapperMock.Setup(x => x.Map<LoggedJump>(It.Ref<EditJumpRequest>.IsAny))
+            .Returns(loggedJump)
+            .Verifiable();
+
+        LogbookController controller = this.CreateLogbookController();
 
         // Act
         var result = await controller.EditJump(new EditJumpRequest());
@@ -167,7 +185,12 @@ public class LogbookControllerTest
             .Throws(exception)
             .Verifiable();
 
-        LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
+        this.MapperMock.Setup(x => x.Map<LoggedJump>(It.Ref<EditJumpRequest>.IsAny))
+            .Returns(new LoggedJump())
+            .Verifiable();
+
+
+        LogbookController controller = this.CreateLogbookController();
 
         // Act
         var result = await controller.EditJump(request);
@@ -188,11 +211,11 @@ public class LogbookControllerTest
     public async Task TestDeleteJump_ReturnsOkWithDeleteJumpResponse(LoggedJump loggedJump)
     {
         // Arrange
-        this.LogbookServiceMock.Setup(x => x.DeleteJump(It.Ref<LoggedJump>.IsAny))
+        this.LogbookServiceMock.Setup(x => x.DeleteJump(It.Ref<string>.IsAny, It.Ref<int>.IsAny))
             .Returns(loggedJump)
             .Verifiable();
 
-        LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
+        LogbookController controller = this.CreateLogbookController();
 
         // Act
         var result = await controller.DeleteJump(new DeleteJumpRequest());
@@ -215,11 +238,11 @@ public class LogbookControllerTest
         int statusCode, Exception exception)
     {
         // Arrange
-        this.LogbookServiceMock.Setup(x => x.DeleteJump(It.Ref<LoggedJump>.IsAny))
+        this.LogbookServiceMock.Setup(x => x.DeleteJump(It.Ref<string>.IsAny, It.Ref<int>.IsAny))
             .Throws(exception)
             .Verifiable();
 
-        LogbookController controller = new(this.LoggerMock.Object, this.LogbookServiceMock.Object);
+        LogbookController controller = this.CreateLogbookController();
 
         // Act
         var result = await controller.DeleteJump(request);
@@ -233,5 +256,22 @@ public class LogbookControllerTest
         Assert.IsInstanceOf<ProblemDetails>(((ObjectResult)result).Value);
         Assert.That((((ObjectResult)result).Value as ProblemDetails)?.Detail, Does.Contain(message));
         Assert.That(((ObjectResult)result).StatusCode, Is.EqualTo(statusCode));
+    }
+
+    private LogbookController CreateLogbookController()
+    {
+        return new(this.LoggerMock.Object, this.LogbookServiceMock.Object, this.MapperMock.Object)
+        {
+            ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext()
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, "123456"),
+                    })),
+                },
+            }
+        };
     }
 }

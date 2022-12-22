@@ -74,15 +74,15 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
         {
             new()
             {
-                AttributeName = nameof(SkydiverInfo.USPAMembershipNumber),
-                AttributeType = ScalarAttributeType.N,
+                AttributeName = nameof(SkydiverInfo.Id),
+                AttributeType = ScalarAttributeType.S,
             },
         };
         List<KeySchemaElement> keySchemaElements = new()
         {
             new()
             {
-                AttributeName = nameof(SkydiverInfo.USPAMembershipNumber),
+                AttributeName = nameof(SkydiverInfo.Id),
                 KeyType = KeyType.HASH,
             },
         };
@@ -107,8 +107,8 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
         {
             new()
             {
-                AttributeName = nameof(LoggedJump.USPAMembershipNumber),
-                AttributeType = ScalarAttributeType.N,
+                AttributeName = nameof(LoggedJump.Id),
+                AttributeType = ScalarAttributeType.S,
             },
             new()
             {
@@ -120,7 +120,7 @@ public sealed class DynamoDBTableManager : IDynamoDBTableManager
         {
             new()
             {
-                AttributeName = nameof(LoggedJump.USPAMembershipNumber),
+                AttributeName = nameof(LoggedJump.Id),
                 KeyType = KeyType.HASH,
             },
             new()

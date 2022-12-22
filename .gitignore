@@ -1,7 +1,9 @@
 **/bin/
 **/obj/
 **/.vscode/
+**/.vs/
 **/.DS_Store
+**/node_modules/
 
 keys/
 **/*.key

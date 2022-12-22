@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Amazon.DynamoDBv2.DataModel;
 using LogbookService.Records.Enums;
-using LogbookService.Records.PropertyConverters;
 
 namespace LogbookService.Records;
 
@@ -9,21 +9,25 @@ namespace LogbookService.Records;
 public sealed class LoggedJump
 {
     [DynamoDBHashKey]
-    [Required(ErrorMessage=$"{nameof(USPAMembershipNumber)} is required")]
-    public int USPAMembershipNumber { get; init; }
+    [Required]
+    [JsonIgnore]
+    public string? Id { get; init; }
 
     [DynamoDBRangeKey]
-    [Required(ErrorMessage=$"{nameof(JumpNumber)} is required")]
+    [Required]
     public int JumpNumber { get; init; }
 
     [DynamoDBProperty]
     public DateTime? Date { get; init; }
 
-    [DynamoDBProperty(typeof(DynamoEnumConverter<JumpCategory>))]
+    [DynamoDBProperty]
     public JumpCategory? JumpCategory { get; init; }
 
-    [DynamoDBProperty]    
+    [DynamoDBProperty]
     public string? Aircraft { get; init; }
+
+    [DynamoDBProperty]
+    public int? Altitude { get; init; }
 
     [DynamoDBProperty]
     public string? Parachute { get; init; }

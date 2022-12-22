@@ -1,4 +1,5 @@
 using System.Configuration;
+using Amazon;
 using Amazon.DynamoDBv2;
 using Microsoft.Extensions.Configuration;
 
@@ -24,6 +25,12 @@ public class DynamoDBConfigProvider : IServiceProvider
                 ServiceURL = dynamoDbConfig.GetValue<string>("ServiceUrl"),
             };
         }
-        return new AmazonDynamoDBConfig();
+
+        return new AmazonDynamoDBConfig()
+        {
+            RegionEndpoint = RegionEndpoint.GetBySystemName(dynamoDbConfig.GetValue<string>("Region")),
+            // Might not be needed
+            ServiceURL = dynamoDbConfig.GetValue<string>("ServiceUrl"),
+        };
     }
 }

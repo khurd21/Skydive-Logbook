@@ -16,13 +16,6 @@ public static class LogbookControllerTestCases
             StatusCodes.Status500InternalServerError,
             new Exception("Random exception")
         },
-        new object[]
-        {
-            123456,
-            "Skydiver with USPA membership number 123456 not found",
-            StatusCodes.Status404NotFound,
-            new SkydiverNotFoundException(123456)
-        },
     };
 
     public static readonly object[] EditJumpExceptionCases =
@@ -31,11 +24,7 @@ public static class LogbookControllerTestCases
         {
             new EditJumpRequest()
             {
-                Jump = new LoggedJump()
-                {
-                    USPAMembershipNumber = 123456,
-                    JumpNumber = 1,
-                },
+                JumpNumber = 1,
             },
             "Failed to edit jump",
             StatusCodes.Status500InternalServerError,
@@ -45,29 +34,11 @@ public static class LogbookControllerTestCases
         {
             new EditJumpRequest()
             {
-                Jump = new LoggedJump()
-                {
-                    USPAMembershipNumber = 123456,
-                    JumpNumber = 1,
-                },
-            },
-            "Skydiver with USPA membership number 123456 not found",
-            StatusCodes.Status404NotFound,
-            new SkydiverNotFoundException(123456),
-        },
-        new object[]
-        {
-            new EditJumpRequest()
-            {
-                Jump = new LoggedJump()
-                {
-                    USPAMembershipNumber = 123456,
-                    JumpNumber = 1,
-                },
+                JumpNumber = 1,
             },
             "Jump with number 1 not found",
             StatusCodes.Status404NotFound,
-            new JumpNotFoundException(123456, 1),
+            new JumpNotFoundException("123456", 1),
         },
     };
 
@@ -77,7 +48,6 @@ public static class LogbookControllerTestCases
         {
             new DeleteJumpRequest()
             {
-                USPAMembershipNumber = 123456,
                 JumpNumber = 1,
             },
             "Failed to delete jump",
@@ -88,12 +58,11 @@ public static class LogbookControllerTestCases
         {
             new DeleteJumpRequest()
             {
-                USPAMembershipNumber = 123456,
                 JumpNumber = 1,
             },
-            "Jump with number 1 from member 123456 not found",
+            "Jump with number 1 not found",
             StatusCodes.Status404NotFound,
-            new JumpNotFoundException(123456, 1),
+            new JumpNotFoundException("123456", 1),
         },
     };
 }

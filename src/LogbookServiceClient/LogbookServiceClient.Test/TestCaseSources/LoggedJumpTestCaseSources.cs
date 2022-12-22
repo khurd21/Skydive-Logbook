@@ -14,7 +14,7 @@ public static class LoggedJumpTestCaseSources
                 new LoggedJump()
                 {
                     JumpNumber = 1,
-                    USPAMembershipNumber = 123456,
+                    Id = "123456",
                     Date = new DateTime(2021, 1, 1),
                     Aircraft = "Cessna 172",
                 }
@@ -24,14 +24,14 @@ public static class LoggedJumpTestCaseSources
                 new LoggedJump()
                 {
                     JumpNumber = 1,
-                    USPAMembershipNumber = 123456,
+                    Id = "123456",
                     Date = new DateTime(2021, 1, 1),
                     Aircraft = "Cessna 172",
                 },
                 new LoggedJump()
                 {
                     JumpNumber = 2,
-                    USPAMembershipNumber = 123456,
+                    Id = "123456",
                     Date = new DateTime(2021, 1, 2),
                     Aircraft = "Cessna 172",
                     JumpCategory = LogbookService.Records.Enums.JumpCategory.FREEFLY,
@@ -48,14 +48,14 @@ public static class LoggedJumpTestCaseSources
             yield return new LoggedJump()
             {
                 JumpNumber = 1,
-                USPAMembershipNumber = 123456,
+                Id = "123456",
                 Date = new DateTime(2021, 1, 1),
                 Aircraft = "Cessna 172",
             };
             yield return new LoggedJump()
             {
                 JumpNumber = 2,
-                USPAMembershipNumber = 123456,
+                Id = "123456",
                 Date = new DateTime(2021, 1, 2),
                 Aircraft = "Cessna 172",
                 JumpCategory = LogbookService.Records.Enums.JumpCategory.FREEFLY,
