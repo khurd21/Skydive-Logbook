@@ -28,17 +28,38 @@ The documentation for Cloud Log is available within the
 - [SettingUp](docs/setting_up.md)
 
 
-### Dependencies
+### Dependencies / SetUp
 
 - Docker Compose
 - .NET6
 - NodeJS
 - NPM
 
+#### Run the Project
+
+- For developing / creating a local database:
+
+```shell
+cd src/LogbookServiceClient/LogbookServiceClient
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
+- The project additionally uses DynamoDB. I set this up using Docker-Compose
 
 ```shell
 $ docker-compose up -d
 ```
+
+- To build the items needed, run `dotnet build` in the base directory.
+
+- To run the project, first make sure the DynamoDB instance is running.
+Then, type the following in the command line:
+
+```shell
+dotnet run --project src/LogbookServiceClient/LogbookServiceClient
+```
+
 
 ### Example
 
